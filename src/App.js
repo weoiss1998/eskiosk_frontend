@@ -1,9 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { useRef } from 'react'
-import './App.css'
 
-import bcrypt from 'bcryptjs'
 /*function sayHello() {
   alert('You clicked me!');
 }*/
