@@ -1,36 +1,74 @@
-import logo from './logo.svg';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import Home from './home';
+
+import Login from './login';
+
+import VerifyMail from './VerifyMail';
+
 import './App.css';
 
-/*function sayHello() {
-  alert('You clicked me!');
-}*/
-
-
-async function Users() {
-    const response = await fetch("http://fastapi.localhost:8008/users/?skip=0&limit=100")
-    const todos = await response.json()
-    console.log(JSON.stringify(todos))
-}
+import { useEffect, useState } from 'react';
+import Register from './register';
 
 
 function App() {
-return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload. 1TEST 
-          <button onClick={Users}>Default</button>          
-        </p>
-      </header>
 
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  const [email, setEmail] = useState("")
+
+
+  useEffect(() => {
+    // Fetch the user email and token from local storage
+    const user = JSON.parse(localStorage.getItem("user"))
+
+    // If the token/email does not exist, mark the user as logged out
+    if (!user || !user.token) {
+      setLoggedIn(false)
+      return
+    }
+    //http://fastapi.localhost:8008/users/?skip=0&limit=100
+    // If the token exists, verify it with the auth server to see if it is valid
+    fetch("http://localhost:3080/verify", {
+          method: "POST",
+          headers: {
+              'jwt-token': user.token
+            }
+      })
+      .then(r => r.json())
+      .then(r => {
+          setLoggedIn('success' === r.message)
+          setEmail(user.email || "")
+      })
+}, [])
+
+
+  return (
+
+    <div className="App">
+
+      <BrowserRouter>
+
+        <Routes>
+
+          <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+
+          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+
+          <Route path="/Register" element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+
+          <Route path="/Verifymail" element={<VerifyMail setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+
+        </Routes>
+
+      </BrowserRouter>
 
     </div>
+
   );
+
 }
 
-
-
-//http://fastapi.localhost:8008/users/?skip=0&limit=100
 
 export default App;

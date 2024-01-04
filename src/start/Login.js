@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+/*import { useRef } from 'react'
 import './App.css'
 
 import bcrypt from 'bcryptjs'
@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs'
 const salt = bcrypt.genSaltSync(10)
 // example =>  $2a$10$CwTycUXWue0Thq9StjUM0u => to be added always to the password hash
 
-function App() {
+function Login() {
   const emailInputRef = useRef()
   const passwordInputRef = useRef()
 
@@ -52,4 +52,4 @@ function App() {
       </header>
     </div>
   )
-}
+}*/
