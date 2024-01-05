@@ -123,7 +123,7 @@ const Register = (props) => {
 
         <div className={"titleContainer"}>
 
-            <div>Login</div>
+            <div>Register</div>
 
         </div>
 
@@ -190,7 +190,7 @@ const Register = (props) => {
 
                 onClick={onButtonClick}
 
-                value={"Log in"} />
+                value={"Register"} />
 
         </div>
 
