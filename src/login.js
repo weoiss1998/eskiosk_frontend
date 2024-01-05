@@ -13,8 +13,6 @@ const Login = (props) => {
 
     const [passwordError, setPasswordError] = useState("")
 
-    
-
     const navigate = useNavigate();
 
         
@@ -96,6 +94,9 @@ const Login = (props) => {
             if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
                 navigate("/register")
             }  
+            else {
+                navigate("/")
+            }
         }
     }
     async function logIn() {
