@@ -1,31 +1,35 @@
 import React, { useState } from "react";
 
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 const VerifyMail = (props) => {
 
-    const [email] = useState("")
+    const [email, setEmail] = useState("")
 
     const [VerifyCode, setVerifyCode] = useState("")
 
     //const [emailError, setEmailError] = useState("")
 
     const [passwordError] = useState("")
+    const [CodeError, setCodeError] = useState("")
 
 
     
 
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
 
         
 
-    const onButtonClick = async () => {
+    const onVerifyButtonClick = async () => {
 
         // Check if email has an account associated with it
         checkCodeCorrect() 
 
 
+    }
+    const onBackButtonClick = async () => {
+        navigate("/register")
     }
 
     /*async function Users() {
@@ -36,56 +40,55 @@ const VerifyMail = (props) => {
         //http://fastapi.localhost:8008/users/?skip=0&limit=100
        // Call the server API to check if the given email ID already exists
     async function checkCodeCorrect() {
-        const response = await fetch("http://fastapi.localhost:8008/check-account", {
+        const response = await fetch("http://fastapi.localhost:8008/verify", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
               },
-            body: JSON.stringify({email: email, id: 0, is_active: true})
+            body: JSON.stringify({email: email, auth_code: VerifyCode})
         });
-        logIn()
         const obj = await response.json()
+        if (response.status!==200){
+            setCodeError("Wrong E-Mail address or Code")
+            return
+        }
         console.log(JSON.stringify(obj))
-        /*
-        if (obj.is_active===true){
+        if (obj.message==="success"){
             console.log("yes")
-            logIn() 
+            navigate("/login")
         }
         else {
-            if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
-                navigate("/register")
-            }  
-        }*/
-    }
-    async function logIn() {
-       /*const response = await fetch("http://fastapi.localhost:8008/auth", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-          },
-        body: JSON.stringify({email: email, hash_pw: password+"notreallyhashed"})
-    });
-    const obj = await response.json();
-    console.log(JSON.stringify(obj));
-    if ('success' === obj.message) {
-        localStorage.setItem("user", JSON.stringify({email, token: obj.token}))
-        props.setLoggedIn(true)
-        props.setEmail(email)
-        navigate("/")
-    } else {
-        window.alert("Wrong email or password")
-    }*/
+            setCodeError("Internal Error, please try again")
+            return
+        }
     }
     return <div className={"mainContainer"}>
 
         <div className={"titleContainer"}>
 
-            <div>Login</div>
+            <div>Verify Mail</div>
 
         </div>
 
         <br />
 
+        <div className={"inputContainer"}>
+
+        <input
+
+            value={email}
+
+            placeholder="Enter your Mail here"
+
+            onChange={ev => setEmail(ev.target.value)}
+
+            className={"inputBox"} />
+
+        <label className="errorLabel">{passwordError}</label>
+
+        </div>
+
+        <br />
 
         <div className={"inputContainer"}>
 
@@ -99,7 +102,7 @@ const VerifyMail = (props) => {
 
                 className={"inputBox"} />
 
-            <label className="errorLabel">{passwordError}</label>
+            <label className="errorLabel">{CodeError}</label>
 
         </div>
 
@@ -113,7 +116,7 @@ const VerifyMail = (props) => {
 
                 type="button"
 
-                onClick={onButtonClick}
+                onClick={onVerifyButtonClick}
 
                 value={"Verify"} />
 
@@ -128,9 +131,9 @@ const VerifyMail = (props) => {
 
                 type="button"
 
-                onClick={onButtonClick}
+                onClick={onBackButtonClick}
 
-                value={"Resend Mail"} />
+                value={"Back to Register"} />
 
         </div>
         <br />

@@ -22,6 +22,10 @@ const Home = (props) => {
 
     }
 
+    const onRegisterButtonClick = () => {
+        navigate("/register")
+    }
+    
     return <div className="mainContainer">
 
         <div className={"titleContainer"}>
@@ -53,9 +57,23 @@ const Home = (props) => {
                 Your email address is {email}
 
             </div> : <div/>)}
-
+        
         </div>
+        
+        <div className={"inputContainer"}>
 
+            <input
+
+                className={"inputButton"}
+
+                type="button"
+
+                onClick={onRegisterButtonClick}
+
+                value={"Register"} />
+
+            </div>
+            <br />
 
 
     </div>

@@ -23,33 +23,6 @@ const Register = (props) => {
 
     const onButtonClick = async () => {
 
-        // Set initial error values to empty
-        //var emailfilter=/^\w+[\+\.\w-]*@([\w-]+\.)*\w+[\w-]*\.([a-z]{2,4}|\d+)$/i;
-        setEmailError("")
-
-        setPasswordError("")
-
-
-        // Check if the user has entered both fields correctly
-
-        if ("" === email) {
-
-            setEmailError("Please enter your email")
-
-            return
-
-        }
-
-
-        /*if (emailfilter.test(email)) {
-
-            setEmailError("Please enter a valid email")
-
-            return
-
-        }*/
-
-
         if ("" === password) {
 
             setPasswordError("Please enter a password")
@@ -66,10 +39,8 @@ const Register = (props) => {
             return
 
         }
-
-
         // Check if email has an account associated with it
-        checkAccountExists() 
+        startRegisterProcess() 
 
 
     }
@@ -81,44 +52,34 @@ const Register = (props) => {
     }*/
         //http://fastapi.localhost:8008/users/?skip=0&limit=100
        // Call the server API to check if the given email ID already exists
-    async function checkAccountExists() {
-        const response = await fetch("http://fastapi.localhost:8008/check-account", {
+    async function startRegisterProcess() {
+        if (password!==passwordTwice){
+            setPasswordError("Passwords do not match");
+        return}
+        else {
+        const response = await fetch("http://fastapi.localhost:8008/create", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
               },
-            body: JSON.stringify({email: email, id: 0, is_active: true})
+            body: JSON.stringify({email: email, hash_pw: password})
         });
         const obj = await response.json()
-        if (obj.is_active===true){
-            console.log("yes")
-            logIn() 
+        if (response.status===400){
+                setEmailError("Email already exists")
+                return
+        }
+        if (obj.message==="success"){
+            console.log("nextStep")
+            navigate("/verifyMail")
         }
         else {
-            if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
+            if (window.confirm("Internal Server Error. Do you want to try again?")) {
                 navigate("/register")
             }  
         }
     }
-    async function logIn() {
-       const response = await fetch("http://fastapi.localhost:8008/auth", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-          },
-        body: JSON.stringify({email: email, hash_pw: password+"notreallyhashed"})
-    });
-    const obj = await response.json();
-    console.log(JSON.stringify(obj));
-    if ('success' === obj.message) {
-        localStorage.setItem("user", JSON.stringify({email, token: obj.token}))
-        props.setLoggedIn(true)
-        props.setEmail(email)
-        navigate("/")
-    } else {
-        window.alert("Wrong email or password")
-    }
-    }
+}
     return <div className={"mainContainer"}>
 
         <div className={"titleContainer"}>
