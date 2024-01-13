@@ -15,7 +15,9 @@ const Login = (props) => {
 
     const navigate = useNavigate();
 
-        
+    const onForgetButtonClick = async () => {
+        navigate("/forgotPassword")
+    }
 
     const onButtonClick = async () => {
 
@@ -177,6 +179,20 @@ const Login = (props) => {
                 value={"Log in"} />
 
         </div>
+
+        <div className={"inputContainer"}>
+
+            <input
+
+                className={"inputButton"}
+
+                type="button"
+
+                onClick={onForgetButtonClick}
+
+                value={"Forgot Password?"} />
+
+            </div>
 
     </div>
 

@@ -10,7 +10,8 @@ import './App.css';
 
 import { useEffect, useState } from 'react';
 import Register from './register';
-
+import ForgotPassword from './forgotPassword';
+import ChangePassword from './changePassword';
 
 function App() {
 
@@ -59,6 +60,10 @@ function App() {
           <Route path="/Register" element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
 
           <Route path="/Verifymail" element={<VerifyMail setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+
+          <Route path="/ForgotPassword" element={<ForgotPassword setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+
+          <Route path="/ChangePassword" element={<ChangePassword setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
 
         </Routes>
 
