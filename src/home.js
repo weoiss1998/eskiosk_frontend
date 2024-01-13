@@ -25,6 +25,10 @@ const Home = (props) => {
     const onRegisterButtonClick = () => {
         navigate("/register")
     }
+
+    /*const onShopButtonClick = () => {
+        navigate("/shop")
+    }*/
     
     return <div className="mainContainer">
 
@@ -79,6 +83,21 @@ const Home = (props) => {
     </div>
 
 }
+/*
+       <div className={"inputContainer"}>
 
+            <input
+
+                className={"inputButton"}
+
+                type="button"
+
+                onClick={onShopButtonClick}
+
+                value={"Shop"} />
+
+            </div>
+            <br />
+*/
 
 export default Home

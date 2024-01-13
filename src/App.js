@@ -2,16 +2,17 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import Home from './home';
 
-import Login from './login';
+import Login from './loginProcedures/login';
 
-import VerifyMail from './VerifyMail';
+import VerifyMail from './loginProcedures/VerifyMail';
 
 import './App.css';
 
 import { useEffect, useState } from 'react';
-import Register from './register';
-import ForgotPassword from './forgotPassword';
-import ChangePassword from './changePassword';
+import Register from './loginProcedures/register';
+import ForgotPassword from './loginProcedures/forgotPassword';
+import ChangePassword from './loginProcedures/changePassword';
+//import Shop from './Shop';
 
 function App() {
 
@@ -74,6 +75,8 @@ function App() {
   );
 
 }
-
+/*
+          <Route path="/Shop" element={<Shop setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+          */
 
 export default App;
