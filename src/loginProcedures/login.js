@@ -85,9 +85,10 @@ const Login = (props) => {
             headers: {
                 'Content-Type': 'application/json'
               },
-            body: JSON.stringify({email: email, id: 0, is_active: true})
+            body: JSON.stringify({email: email, id: 0, is_active: true, is_admin: true, sales_period: "string", open_balances: 0})
         });
         const obj = await response.json()
+        console.log(JSON.stringify(obj))
         if (obj.is_active===true){
             console.log("yes")
             logIn() 
@@ -112,10 +113,11 @@ const Login = (props) => {
     const obj = await response.json();
     console.log(JSON.stringify(obj));
     if ('success' === obj.message) {
-        localStorage.setItem("user", JSON.stringify({email, token: obj.token}))
-        props.setLoggedIn(true)
-        props.setEmail(email)
-        navigate("/")
+        sessionStorage.setItem("email", email)
+        sessionStorage.setItem("user_id", obj.user_id)
+        sessionStorage.setItem("is_admin", obj.is_admin)
+        sessionStorage.setItem("token", obj.token)
+        navigate("/dashboard")
     } else {
         window.alert("Wrong email or password")
     }

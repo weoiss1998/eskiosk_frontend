@@ -1,82 +1,81 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Topbar from "./scenes/global/Topbar";
+import Sidebar from "./scenes/global/Sidebar";
+import Dashboard from "./scenes/dashboard";
+import Team from "./scenes/team";
+import Invoices from "./scenes/invoices";
+import Contacts from "./scenes/contacts";
+import Bar from "./scenes/bar";
+import Form from "./scenes/form";
+import Line from "./scenes/line";
+import Pie from "./scenes/pie";
+import FAQ from "./scenes/faq";
+import Geography from "./scenes/geography";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode } from "./theme";
+import Calendar from "./scenes/calendar/calendar";
+import Cart from "./scenes/cart";
+import Shop from "./scenes/shop";
+import FullFeaturedCrudGrid from "./scenes/test";
+import FormProduct from "./scenes/formProduct";
+import Products from "./scenes/products";
+import BuyHistory from "./scenes/buyHistory";
+import Login from "./loginProcedures/login";
+import Register from "./loginProcedures/register";
+import VerifyMail from "./loginProcedures/VerifyMail";
+import ForgotPassword from "./loginProcedures/forgotPassword";
+import ChangePassword from "./loginProcedures/changePassword";
+import { useLocation, Navigate } from 'react-router-dom';
 
-import Home from './home';
-
-import Login from './loginProcedures/login';
-
-import VerifyMail from './loginProcedures/VerifyMail';
-
-import './App.css';
-
-import { useEffect, useState } from 'react';
-import Register from './loginProcedures/register';
-import ForgotPassword from './loginProcedures/forgotPassword';
-import ChangePassword from './loginProcedures/changePassword';
-//import Shop from './Shop';
 
 function App() {
+  const [theme, colorMode] = useMode();
+  const [isSidebar, setIsSidebar] = useState(true);
+  const location = useLocation();
+  const excludedRoutes = ['/login', '/Register', '/Verifymail', '/ForgotPassword', '/ChangePassword'];
 
-  const [loggedIn, setLoggedIn] = useState(false)
-
-  const [email, setEmail] = useState("")
-
-
-  useEffect(() => {
-    // Fetch the user email and token from local storage
-    const user = JSON.parse(localStorage.getItem("user"))
-
-    // If the token/email does not exist, mark the user as logged out
-    if (!user || !user.token) {
-      setLoggedIn(false)
-      return
-    }
-    //http://fastapi.localhost:8008/users/?skip=0&limit=100
-    // If the token exists, verify it with the auth server to see if it is valid
-    fetch("http://localhost:3080/verify", {
-          method: "POST",
-          headers: {
-              'jwt-token': user.token
-            }
-      })
-      .then(r => r.json())
-      .then(r => {
-          setLoggedIn('success' === r.message)
-          setEmail(user.email || "")
-      })
-}, [])
-
+  // Function to check if the current location matches certain paths
 
   return (
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div className="app">
+        {!excludedRoutes.includes(location.pathname)  && <Sidebar isSidebar={isSidebar} />}
+          <main className="content">
+          {!excludedRoutes.includes(location.pathname)  && <Topbar setIsSidebar={setIsSidebar} />}
+              <Routes>
+              <Route path="/" element={<Navigate to ="/login" />}/>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/team" element={<Team />} />
+              <Route path="/contacts" element={<Contacts />} />
+              <Route path="/invoices" element={<Invoices />} />
+              <Route path="/form" element={<Form />} />
+              <Route path="/bar" element={<Bar />} />
+              <Route path="/pie" element={<Pie />} />
+              <Route path="/line" element={<Line />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/calendar" element={<Calendar />} />
+              <Route path="/geography" element={<Geography />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/test" element={<FullFeaturedCrudGrid />} />
+              <Route path="/formProduct" element={<FormProduct />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/buyHistory" element={<BuyHistory />} />
+              <Route path="/login" element={<Login  />} />
+              <Route path="/Register" element={<Register  />} />
+              <Route path="/Verifymail" element={<VerifyMail  />} />
+              <Route path="/ForgotPassword" element={<ForgotPassword />} />
+              <Route path="/ChangePassword" element={<ChangePassword />} />
+              </Routes>
+            </main>       
 
-    <div className="App">
-
-      <BrowserRouter>
-
-        <Routes>
-
-          <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
-
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-
-          <Route path="/Register" element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-
-          <Route path="/Verifymail" element={<VerifyMail setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-
-          <Route path="/ForgotPassword" element={<ForgotPassword setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-
-          <Route path="/ChangePassword" element={<ChangePassword setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-
-        </Routes>
-
-      </BrowserRouter>
-
-    </div>
-
+        </div>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
-
 }
-/*
-          <Route path="/Shop" element={<Shop setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-          */
 
 export default App;
