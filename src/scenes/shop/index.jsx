@@ -13,13 +13,12 @@ import img from "./image.jpg";
 
 
 const card = {
-  image:
-    img,
   name: "Nature Around Us",
   db_id: 0,
   quantity: 1,
   price:
-    "10,99"
+    "10,99",
+  image: "img"
 };
 
 let products;
@@ -62,11 +61,16 @@ useEffect(() => {
       console.log(products.length)
       //console.table(data);
       if (index < products.length) {
-        setCards([...cards, {image: img,name: products[index].name,db_id: products[index].id,quantity: products[index].quantity,price:products[index].price}]);
+        var picture= img;
+        if (products[index].image != null && products[index].image != ""){
+          picture = products[index].image;
+        }
+        
+        setCards([...cards, {image: picture ,name: products[index].name,db_id: products[index].id,quantity: products[index].quantity,price:products[index].price}]);
         console.log(products[index].id);
         setIndex(index+1);
-        }
-    } catch (error) {
+        
+    }} catch (error) {
       console.error('Error fetching data:', error);
     }
   }
@@ -144,7 +148,7 @@ useEffect(() => {
           return (
             <Grid item>
               <Card key={index} >
-                <CardMedia component="img" src={image} />
+                <CardMedia component="img" src={`data:image/png;base64, ${image}`} />
                 <CardContent>
                   <Typography
                     className={"MuiTypography--heading"}

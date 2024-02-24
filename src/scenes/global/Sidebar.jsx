@@ -47,6 +47,7 @@ const Sidebar = () => {
   else{
     admin_test=sessionStorage.getItem("is_admin");
   }
+  console.log("admin_test: ", admin_test);
 if(admin_test){
   return (
     <Box
@@ -192,6 +193,13 @@ if(admin_test){
             <Item
               title="Buy History"
               to="/buyHistory"
+              icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Overall Buy History"
+              to="/AdminBuyHistory"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

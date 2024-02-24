@@ -85,7 +85,7 @@ const Login = (props) => {
             headers: {
                 'Content-Type': 'application/json'
               },
-            body: JSON.stringify({email: email, id: 0, is_active: true, is_admin: true, sales_period: "string", open_balances: 0})
+            body: JSON.stringify({email: email})
         });
         const obj = await response.json()
         console.log(JSON.stringify(obj))

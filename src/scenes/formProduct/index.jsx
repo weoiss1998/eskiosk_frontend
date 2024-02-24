@@ -3,8 +3,14 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import { useEffect, useState, useRef } from "react";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
+
+var picture="";
 
 const FormProduct = () => {
+  const hiddenFileInput = useRef(null); 
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   async function postNewProduct(values) {
@@ -13,9 +19,9 @@ const FormProduct = () => {
         headers: {
             'Content-Type': 'application/json'
           },
-        body: JSON.stringify({name: values.name, price: values.price, quantity: values.quantity})
+        body: JSON.stringify({name: values.name, price: values.price, quantity: values.quantity, image: picture})
     });
-    console.log(JSON.stringify({name: values.name, price: values.price, quantity: values.quantity}))
+    console.log(JSON.stringify({name: values.name, price: values.price, quantity: values.quantity, image: picture}))
     const obj = await response.json()
     if (obj.is_active===true){
         console.log("yes")
@@ -27,11 +33,38 @@ const FormProduct = () => {
         }
     }
 }
-
-
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
   const handleFormSubmit = (values) => {
     postNewProduct(values);
   };
+
+  const handleClick = event => {
+    hiddenFileInput.current.click();   
+  };
+
+  const handlePicture = event => {
+    const fileUploaded = event.target.files[0]; // ADDED
+
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    const base64String = reader.result.split(",")[1];
+    console.log(base64String);
+    picture = base64String;
+    // Do something with the base64String
+  };
+  reader.readAsDataURL(fileUploaded);
+  };
+
 
   return (
     <Box m="20px">
@@ -100,6 +133,18 @@ const FormProduct = () => {
               />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
+            <Button
+  component="label"
+  role={undefined}
+  onClick={handleClick}
+  color="secondary"
+  variant="contained"
+  tabIndex={-1}
+  startIcon={<CloudUploadIcon />}
+>
+  Upload file
+  <VisuallyHiddenInput type="file" ref={hiddenFileInput} onChange={handlePicture} />
+</Button>
               <Button type="submit" color="secondary" variant="contained">
                 Create New Product
               </Button>
@@ -111,8 +156,7 @@ const FormProduct = () => {
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+const phoneRegExp = /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
   let patternTwoDigisAfterComma = /^\d+(\.\d{0,2})?$/;
   const commonStringValidator = yup

@@ -7,47 +7,41 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { Button} from "@mui/material";
 import { useEffect, useState } from "react";
-import {AuthCheck} from "../../components/authcheck";
 import { useNavigate } from "react-router-dom";
+import {AuthCheck} from "../../components/authcheck";
 
 
-function Product(id, name, quantity, price, total, paid, period) {
-  this.id = id;
-  this.prduct_name = name;
-  this.quantity = quantity;
-  this.price = price;
-  this.total = total;
-  this.paid = paid;
-  this.period = period;
+class ProductEntry {
+  id = 0;
+  user_id = 0;
+  user_name = "";
+  product_name = "";
+  quantity = 0;
+  price = 0.0;
+  total = 0.0;
+  paid = false;
+  period = "";
 }
 
 var salesEntryList = [];
 var salesEntries;
 
-const BuyHistory = () => {
+const AdminBuyHistory = () => {
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     let isSubscribed = true;
-    const fetchData = async () => {
-      var auth = AuthCheck();
+    var auth = AuthCheck();
       if (auth === false) {
         navigate("/login");
       }
+    const fetchData = async () => {
       try {
         //const response = await fetch("./db.json");
         //const response = await fetch("http://fastapi.localhost:8008/salesEntries/");
-        let user_id = 0;  //to be replaced with user id from session
-        if (sessionStorage.getItem("user_id") == null) {
-          return;
-        }
-        else {
-          user_id = sessionStorage.getItem("user_id");
-        }
-        var url = new URL("http://fastapi.localhost:8008/salesEntriesID/");
-        url.searchParams.append('user_id', user_id);
+        var url = new URL("http://fastapi.localhost:8008/salesEntries/");
         const response = await fetch(url, {method: "GET"});
         const result = await response.json();
         if (isSubscribed) {
@@ -61,8 +55,10 @@ const BuyHistory = () => {
         //console.log(JSON.stringify([...items]));
       salesEntryList = [];
       for(let i = 0; i < salesEntries.length; i++) {
-          var temp = new Product();
+          var temp = new ProductEntry();
           temp.id = salesEntries[i].id;
+          temp.user_id = salesEntries[i].user_id;
+          temp.user_name = salesEntries[i].user_name;
           temp.quantity = salesEntries[i].quantity;
           temp.product_name = salesEntries[i].product_name;
           temp.price = salesEntries[i].price;
@@ -158,4 +154,4 @@ const BuyHistory = () => {
   );
 };
 
-export default BuyHistory;
+export default AdminBuyHistory;

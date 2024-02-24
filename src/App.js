@@ -26,6 +26,7 @@ import Register from "./loginProcedures/register";
 import VerifyMail from "./loginProcedures/VerifyMail";
 import ForgotPassword from "./loginProcedures/forgotPassword";
 import ChangePassword from "./loginProcedures/changePassword";
+import AdminBuyHistory from "./scenes/adminBuyHistory";
 import { useLocation, Navigate } from 'react-router-dom';
 
 
@@ -65,6 +66,7 @@ function App() {
               <Route path="/products" element={<Products />} />
               <Route path="/buyHistory" element={<BuyHistory />} />
               <Route path="/login" element={<Login  />} />
+              <Route path="adminBuyHistory" element={<AdminBuyHistory/>}/>
               <Route path="/Register" element={<Register  />} />
               <Route path="/Verifymail" element={<VerifyMail  />} />
               <Route path="/ForgotPassword" element={<ForgotPassword />} />
