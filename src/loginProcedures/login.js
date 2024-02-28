@@ -117,7 +117,7 @@ const Login = (props) => {
         sessionStorage.setItem("user_id", obj.user_id)
         sessionStorage.setItem("is_admin", obj.is_admin)
         sessionStorage.setItem("token", obj.token)
-        navigate("/dashboard")
+        navigate("/shop")
     } else {
         window.alert("Wrong email or password")
     }
