@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, TextField  } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -9,6 +9,10 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import { Grid, Divider } from "@mui/material";
 import img from "./image.jpg";
+import { Formik } from "formik";
+import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+import {AuthCheck} from "../../components/authcheck";
 
 
 
@@ -43,15 +47,42 @@ function AddToCart(items, db_id, quantity) {
 
 const Shop = () => {
 //const [data, setData] = useState([]);
+const navigate = useNavigate();
 const [index, setIndex] = useState(0);
 const [cards, setCards] = React.useState([]);
 const theme = useTheme();
 const colors = tokens(theme.palette.mode);
+const initialValues = {
+  email: "",
+  amount: 0,
+};
+let patternTwoDigisAfterComma = /^\d+(\.\d{0,2})?$/;
+const checkoutSchema = yup.object().shape({
+  email: yup.string(),//email("invalid email").required("required"),
+  amount: yup
+  .number()
+  .positive()
+  .test(
+    "is-decimal",
+    "The amount should be a decimal with maximum two digits after comma",
+    (val) => {
+      if (val != undefined) {
+        return patternTwoDigisAfterComma.test(val);
+      }
+      return true;
+    }
+  )
+  .required("required"),
+});
 
 
 useEffect(() => {
-
+  
   const fetchData = async () => {
+    var check = await AuthCheck();
+  if (check === false) {
+    navigate("/login");    
+  }
     try {
       //const response = await fetch("./db.json");
       const response = await fetch("http://fastapi.localhost:8008/products/");
@@ -72,19 +103,50 @@ useEffect(() => {
         
     }} catch (error) {
       console.error('Error fetching data:', error);
-    }
-  }
-  console.log("fetchData");
+  }}
   fetchData();
 
 }, [products]);
 
+async function sendMoney(values) {
+  var url = new URL("http://fastapi.localhost:8008/sendMoney/");
+  url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+  url.searchParams.append('email', values.email);
+  url.searchParams.append('amount', values.amount);
+  const response = await fetch(url, {method: "POST",});
+  console.log(JSON.stringify({email: values.email, amount: values.amount}))
+  const obj = await response.json()
+  console.log(response.status);
+  if (response.status === 200){
+    if (window.confirm("Money sent successfully")) {
+    }
+  }
+  else {
+      if (window.confirm("Error sending money")) {
+      }  
+  }
+}
+
+const handleFormSubmit = (values) => {
+  if(window.confirm("Do you want to send money to " + values.email + " in the amount of " + values.amount + " €?")){
+  sendMoney(values);
+  }
+};
   
 
   //console.table(products);
   var items = new Map();
  
-
+/*
+  <Box
+  display="grid"
+  gap="30px"
+  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+  sx={{
+    "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+  }}
+>
+*/
   return (
     <Box m="20px">
       <Header title="Shop" subtitle="Products to buy" />
@@ -116,8 +178,21 @@ useEffect(() => {
             color: `${colors.greenAccent[200]} !important`,
           },
         }}
+      ><Box
+      display="grid"
+      gridTemplateColumns="repeat(12, 1fr)"
+      gridAutoRows="140px"
+      gap="20px"
+    >
+      {/* ROW 1 */}
+      <Box
+        gridColumn="span 3"
+        backgroundColor={colors.primary[400]}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
       >
-      <Button
+        <Button
           variant="contained"
           size="small"
           color="primary"
@@ -131,17 +206,89 @@ useEffect(() => {
         >
           Add
         </Button>
-        <Button
-          variant="contained"
-          size="small"
-          color="primary"
-          onClick={() => {
-            setIndex(0);
-            setCards([]);
-          }}
-        >
-          Reset
-        </Button>
+ 
+      </Box>
+      <Box
+        gridColumn="span 3"
+        backgroundColor={colors.primary[400]}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+       {/*Box Inhalt hier*/}
+      </Box>
+      <Box
+        gridColumn="span 3"
+        backgroundColor={colors.primary[400]}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {/*Box Inhalt hier*/}
+      </Box>
+      <Box
+        gridColumn="span 3"
+        backgroundColor={colors.primary[400]}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+         <Formik
+        onSubmit={handleFormSubmit}
+        initialValues={initialValues}
+        validationSchema={checkoutSchema}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+        }) => (
+          <form onSubmit={handleSubmit}>
+
+              <Box display="flex" justifyContent="end" mt="20px" >
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="email"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.name}
+                name="email"
+                error={!!touched.email && !!errors.email}
+                helperText={touched.email && errors.email}
+                sx={{ gridColumn: "span 4" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Amount"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.amount}
+                name="amount"
+                error={!!touched.amount && !!errors.amount}
+                helperText={touched.amount && errors.amount}
+                sx={{ gridColumn: "span 4" }}
+              />
+            </Box>
+            <Box display="flex" justifyContent="end" mt="20px">
+              <Button type="submit" color="secondary" variant="contained">
+                Send Money to Collegue
+              </Button>
+            </Box>
+          </form>
+        )}
+      </Formik>
+
+      </Box>
+
+       
+      </Box>
       <Grid container spacing={1}>
         {cards.map((cards, index) => {
           const { image, name, db_id, quantity, price } = cards;
