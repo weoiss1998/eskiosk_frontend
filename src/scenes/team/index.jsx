@@ -88,7 +88,59 @@ const Team = () => {
     var url = new URL("http://fastapi.localhost:8008/closePeriod/");
     const response = fetch(url, {method: "POST"});
   };
-  
+
+  function enterAmount(varValue) {
+    var enteredAmount = prompt("Please enter Euro amount you want to add");
+    if (enteredAmount == null) {
+      return false;
+    }
+    enteredAmount = enteredAmount.replace(",", ".");
+    var code, i, len;
+    var foundDot = false;
+    for (i = 0, len = enteredAmount.length; i < len; i++) {
+      code = enteredAmount.charCodeAt(i);
+      if(i ===0){
+        if (!(code > 47 && code < 58) && // numeric (0-9)
+          !(code === 46) &&// Dot
+        !(code === 45) 
+      ) 
+        { 
+        alert('Enter a valid amount');
+        return enterAmount();
+      }
+    }
+      else{
+      if (!(code > 47 && code < 58) && // numeric (0-9)
+          !(code === 46)// Dot
+      ) 
+        { 
+        alert('Enter a valid amount');
+        return enterAmount();
+      }
+      if(code === 46) {
+        if(foundDot === true) {
+          alert('Enter a valid amount');
+          return enterAmount();
+        }
+        var redLen = len - i;
+        foundDot = true; 
+        if(redLen > 3) {
+          alert('Enter a valid amount');
+          return enterAmount();
+        }
+      }
+    }
+    }
+    varValue = parseFloat(enteredAmount);
+    if(isNaN(varValue)) {
+        alert('Enter a valid amount');
+        return enterAmount();
+    }
+    else if (varValue != null) {
+        return varValue;
+    }
+  }
+
 
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
@@ -228,7 +280,35 @@ const Team = () => {
           </Button>
         );
       }
-    },    
+    },
+    {
+      field: "Add Money",
+      renderCell: (cellValues) => {
+        return (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={(event) => {
+              //changePassword(event, cellValues);
+              var amountAddition = enterAmount(amountAddition);
+              if(amountAddition != false) {
+                console.log(amountAddition);
+                console.log(cellValues.row.id);
+                console.log(cellValues.row.email);
+                cellValues.row.actualTurnover += amountAddition;
+                var url = new URL("http://fastapi.localhost:8008/addOpenBalances/");
+                url.searchParams.append('user_id', cellValues.row.id);
+                url.searchParams.append('amount', amountAddition);
+                const response = fetch(url, {method: "POST"});
+                window.location.reload();
+              }
+            }}
+          >
+            Add Money
+          </Button>
+        );
+      }
+    },      
     {
       field: "Print",
       renderCell: (cellValues) => {
