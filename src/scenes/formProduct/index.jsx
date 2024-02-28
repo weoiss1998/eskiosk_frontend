@@ -45,7 +45,11 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
   const handleFormSubmit = (values) => {
+    if (window.confirm("Do you want to create a new product?")
+    ) {
     postNewProduct(values);
+    window.location.reload();
+    }
   };
 
   const handleClick = event => {
