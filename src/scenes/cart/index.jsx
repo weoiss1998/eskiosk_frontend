@@ -54,7 +54,7 @@ var cart = [];
 var products;
 var items;
 
-const Cart = () => {
+const Cart = (prop) => {
   const theme = useTheme();
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
@@ -64,6 +64,11 @@ const Cart = () => {
     console.log(cellValues.row.id);
     cart.splice(cellValues.row.id, 1);
     items.delete(cellValues.row.id);
+    var temp = 0;
+    items.forEach (function(value, key) {
+      temp += parseInt(value);
+    });
+    prop.setCartAmount(temp);
     sessionStorage.setItem("cart", JSON.stringify([...items]));
     setStatus(0);
   };
@@ -216,6 +221,7 @@ const Cart = () => {
           onClick={() => {
             checkout(cart);
             setStatus(0);
+            prop.setCartAmount(0);
           }}
         >
           Checkout
@@ -226,6 +232,7 @@ const Cart = () => {
           color="primary"
           onClick={() => {
             sessionStorage.removeItem("cart");
+            prop.setCartAmount(0);
             cart = [];
             setStatus(0);
           }}
@@ -243,6 +250,11 @@ const Cart = () => {
                 cart[i].quantity = props.value;
                 cart[i].cost = cart[i].quantity * cart[i].price;
                 items.set(cart[i].id, cart[i].quantity);
+                var temp = 0;
+                items.forEach (function(value, key) {
+                  temp += parseInt(value);
+                });
+                prop.setCartAmount(temp);
                 sessionStorage.setItem("cart", JSON.stringify([...items]));
                 setStatus(0);
               }

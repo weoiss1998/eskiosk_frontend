@@ -27,7 +27,7 @@ const card = {
 
 let products;
 
-function AddToCart(items, db_id, quantity) {
+function AddToCart(items, db_id, quantity, props) {
   //console.log("AddToCart");
   //console.log(items);
   if (sessionStorage.getItem("cart") == null) {
@@ -41,11 +41,16 @@ function AddToCart(items, db_id, quantity) {
     items.set(db_id, quantity);
   }
   sessionStorage.setItem("cart", JSON.stringify([...items]));
+  var temp = 0;
+                items.forEach (function(value, key) {
+                  temp += parseInt(value);
+                });
+  props.setCartAmount(temp);
 }
 
 
 
-const Shop = () => {
+const Shop = (props) => {
 //const [data, setData] = useState([]);
 const navigate = useNavigate();
 const [index, setIndex] = useState(0);
@@ -318,7 +323,7 @@ const handleFormSubmit = (values) => {
                     size="small"
                     color="primary"
                     onClick={() => {
-                      AddToCart(items, db_id, 1); 
+                      AddToCart(items, db_id, 1, props); 
                     }}
                   >
                     Add to Cart

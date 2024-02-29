@@ -28,7 +28,17 @@ function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const location = useLocation();
+  const [cartAmount, setCartAmount] = useState(0);
   const excludedRoutes = ['/login', '/Register', '/Verifymail', '/ForgotPassword', '/ChangePassword'];
+
+  if (sessionStorage.getItem("cart") != null ){
+    let items = new Map(JSON.parse(sessionStorage.getItem("cart")));
+    var temp = 0;
+    items.forEach (function(value, key) {
+      temp += parseInt(value);
+    });
+    if (temp !== cartAmount) setCartAmount(temp);
+  }
 
   // Function to check if the current location matches certain paths
 
@@ -39,7 +49,7 @@ function App() {
         <div className="app">
         {!excludedRoutes.includes(location.pathname)  && <Sidebar isSidebar={isSidebar} />}
           <main className="content">
-          {!excludedRoutes.includes(location.pathname)  && <Topbar setIsSidebar={setIsSidebar} />}
+          {!excludedRoutes.includes(location.pathname)  && <Topbar setIsSidebar={setIsSidebar} cartAmount={cartAmount} />}
               <Routes>
               <Route path="/" element={<Navigate to ="/login" />}/>
               <Route path="/dashboard" element={<Dashboard />} />
@@ -47,8 +57,8 @@ function App() {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/form" element={<Form />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/cart" element={<Cart />} />
+              <Route path="/shop" element={<Shop setCartAmount={setCartAmount} cartAmount={cartAmount}/>} />
+              <Route path="/cart" element={<Cart setCartAmount={setCartAmount} cartAmount={cartAmount}/>} />
               <Route path="/test" element={<FullFeaturedCrudGrid />} />
               <Route path="/formProduct" element={<FormProduct />} />
               <Route path="/products" element={<Products />} />

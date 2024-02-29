@@ -25,6 +25,7 @@ const FormProduct = () => {
     const obj = await response.json()
     if (obj.is_active===true){
         console.log("yes")
+        window.location.reload();
     }
     else {
         if (window.confirm("Error creating new product")) {
@@ -47,8 +48,7 @@ const VisuallyHiddenInput = styled('input')({
   const handleFormSubmit = (values) => {
     if (window.confirm("Do you want to create a new product?")
     ) {
-    postNewProduct(values);
-    window.location.reload();
+    postNewProduct(values);   
     }
   };
 
