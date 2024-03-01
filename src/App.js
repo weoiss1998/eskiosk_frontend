@@ -22,6 +22,7 @@ import ForgotPassword from "./loginProcedures/forgotPassword";
 import ChangePassword from "./loginProcedures/changePassword";
 import AdminBuyHistory from "./scenes/adminBuyHistory";
 import { useLocation, Navigate } from 'react-router-dom';
+import Settings from "./scenes/settings";
 
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
               <Route path="/Verifymail" element={<VerifyMail  />} />
               <Route path="/ForgotPassword" element={<ForgotPassword />} />
               <Route path="/ChangePassword" element={<ChangePassword />} />
+              <Route path="/settings" element={<Settings />} />
               </Routes>
             </main>       
 

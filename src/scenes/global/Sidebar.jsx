@@ -135,27 +135,6 @@ if(admin_test==="true"){
             </Typography>
 
             <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Shop"
-              to="/shop"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
               title="Cart"
               to="/cart"
               icon={<ReceiptOutlinedIcon />}
@@ -165,6 +144,13 @@ if(admin_test==="true"){
             <Item
               title="Buy History"
               to="/buyHistory"
+              icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Settings"
+              to="/settings"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
