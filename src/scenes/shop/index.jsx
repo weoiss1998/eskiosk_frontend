@@ -48,9 +48,10 @@ function AddToCart(items, db_id, quantity, props) {
   props.setCartAmount(temp);
 }
 
-
+var resolution = 0;
 
 const Shop = (props) => {
+ resolution = window.screen.height * window.devicePixelRatio/6;
 //const [data, setData] = useState([]);
 const navigate = useNavigate();
 const [index, setIndex] = useState(0);
@@ -156,7 +157,7 @@ const handleFormSubmit = (values) => {
     <Box m="20px">
       <Header title="Shop" subtitle="Products to buy" />
       <Box
-        m="40px 0 0 0"
+        m="40px 0 0 0px"
         height="75vh"
         sx={{
           "& .MuiDataGrid-root": {
@@ -294,13 +295,13 @@ const handleFormSubmit = (values) => {
 
        
       </Box>
-      <Grid container spacing={1}>
+      <Grid container spacing={5}>
         {cards.map((cards, index) => {
           const { image, name, db_id, quantity, price } = cards;
           return (
             <Grid item>
               <Card key={index} >
-                <CardMedia component="img" src={`data:image/png;base64, ${image}`} />
+                <CardMedia component="img" src={`data:image/png;base64, ${image}`}  sx={{ width: resolution, objectFit: "contain" }}/>
                 <CardContent>
                   <Typography
                     className={"MuiTypography--heading"}
