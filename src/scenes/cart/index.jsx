@@ -4,6 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
+import {AuthCheck} from "../../components/authcheck";
 
 const product = {
   user_id: 0,
@@ -26,7 +27,10 @@ class Product {
 }
 
 async function checkout(listCart) {
-  const response = await fetch("http://fastapi.localhost:8008/cart/products/", {
+  var url = new URL("http://fastapi.localhost:8008/cart/products/");
+  url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+  url.searchParams.append('token', sessionStorage.getItem("token"));
+  const response = await fetch(url, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -76,6 +80,10 @@ const Cart = (prop) => {
   useEffect(() => {
     let isSubscribed = true;
     const fetchData = async () => {
+      var auth = AuthCheck();
+      if (auth === false) {
+        navigate("/login");
+      }
       try {
         //const response = await fetch("./db.json");
         const response = await fetch("http://fastapi.localhost:8008/products/");

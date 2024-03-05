@@ -42,6 +42,8 @@ const AdminBuyHistory = () => {
         //const response = await fetch("./db.json");
         //const response = await fetch("http://fastapi.localhost:8008/salesEntries/");
         var url = new URL("http://fastapi.localhost:8008/salesEntries/");
+        url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+        url.searchParams.append('token', sessionStorage.getItem("token"));
         const response = await fetch(url, {method: "GET"});
         const result = await response.json();
         if (isSubscribed) {

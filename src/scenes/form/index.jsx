@@ -3,9 +3,14 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import {AuthCheck} from "../../components/authcheck";
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  var auth = AuthCheck();
+  if (auth === false) {
+    navigate("/login");
+  }
 
   const handleFormSubmit = (values) => {
     console.log(values);

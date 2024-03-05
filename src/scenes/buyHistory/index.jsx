@@ -47,7 +47,8 @@ const BuyHistory = () => {
           user_id = sessionStorage.getItem("user_id");
         }
         var url = new URL("http://fastapi.localhost:8008/salesEntriesID/");
-        url.searchParams.append('user_id', user_id);
+        url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+        url.searchParams.append('token', sessionStorage.getItem("token"));
         const response = await fetch(url, {method: "GET"});
         const result = await response.json();
         if (isSubscribed) {

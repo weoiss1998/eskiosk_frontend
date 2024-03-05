@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
-import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
 import Contacts from "./scenes/contacts";
@@ -30,7 +29,7 @@ function App() {
   const [isSidebar, setIsSidebar] = useState(true);
   const location = useLocation();
   const [cartAmount, setCartAmount] = useState(0);
-  const excludedRoutes = ['/login', '/Register', '/Verifymail', '/ForgotPassword', '/ChangePassword'];
+  const excludedRoutes = ['/login', '/register', '/verifymail', '/forgotPassword', '/changePassword'];
 
   if (sessionStorage.getItem("cart") != null ){
     let items = new Map(JSON.parse(sessionStorage.getItem("cart")));
@@ -53,7 +52,6 @@ function App() {
           {!excludedRoutes.includes(location.pathname)  && <Topbar setIsSidebar={setIsSidebar} cartAmount={cartAmount} />}
               <Routes>
               <Route path="/" element={<Navigate to ="/login" />}/>
-              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />

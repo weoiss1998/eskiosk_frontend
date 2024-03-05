@@ -4,6 +4,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Button} from "@mui/material";
 import { useEffect, useState } from "react";
+import {AuthCheck} from "../../components/authcheck";
 
 const product = {
   id: 0,
@@ -33,6 +34,8 @@ async function saveChanges(productList) {
   for(let i = 0; i < productList.length; i++) {
     if(productList[i].modifiedName === true) {
       var url = new URL("http://fastapi.localhost:8008/changename/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
       url.searchParams.append('product_id', productList[i].id);
       url.searchParams.append('name', productList[i].name);
       const response = await fetch(url, {method: "PATCH"});
@@ -41,6 +44,8 @@ async function saveChanges(productList) {
     }
     if(productList[i].modifiedQuantity === true) {
       var url = new URL("http://fastapi.localhost:8008/changestock/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
       url.searchParams.append('product_id', productList[i].id);
       url.searchParams.append('quantity', productList[i].quantity);
       const response = await fetch(url, {method: "PATCH"});
@@ -49,6 +54,8 @@ async function saveChanges(productList) {
     }
     if(productList[i].modifiedPrice === true) {
       var url = new URL("http://fastapi.localhost:8008/changeprice/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
       url.searchParams.append('product_id', productList[i].id);
       url.searchParams.append('price', productList[i].price);
       const response = await fetch(url, {method: "PATCH"});
@@ -71,6 +78,10 @@ const Products = () => {
   useEffect(() => {
     let isSubscribed = true;
     const fetchData = async () => {
+      var auth = AuthCheck();
+      if (auth === false) {
+        navigate("/login");
+      }
       try {
         //const response = await fetch("./db.json");
         const response = await fetch("http://fastapi.localhost:8008/products/");

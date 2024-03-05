@@ -7,6 +7,7 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { Button} from "@mui/material";
 import { useEffect, useState } from "react";
+import {AuthCheck} from "../../components/authcheck";
 
 class User{
   id= 0;
@@ -64,7 +65,9 @@ async function saveChanges(userList) {
     }
     if(userList[i].modifiedPaid === true) {
       var url = new URL("http://fastapi.localhost:8008/changePaid/");
-      url.searchParams.append('user_id', userList[i].id);
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
+      url.searchParams.append('change_id', userList[i].id);
       url.searchParams.append('paid', userList[i].paid);
       const response = await fetch(url, {method: "PATCH"});
       await response.json();
@@ -86,6 +89,8 @@ const Team = () => {
 
   const closePeriod = () => {
     var url = new URL("http://fastapi.localhost:8008/closePeriod/");
+    url.searchParams.append('admin_id', sessionStorage.getItem("user_id"));
+    url.searchParams.append('token', sessionStorage.getItem("token"));
     const response = fetch(url, {method: "POST"});
   };
 
@@ -148,10 +153,18 @@ const Team = () => {
   useEffect(() => {
     let isSubscribed = true;
     const fetchData = async () => {
+      var auth = AuthCheck();
+      if (auth === false) {
+        navigate("/login");
+      }
       try {
         //const response = await fetch("./db.json");
-        const response = await fetch("http://fastapi.localhost:8008/userData/");
+        var url = new URL("http://fastapi.localhost:8008/userData/");
+        url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+        url.searchParams.append('token', sessionStorage.getItem("token"));
+        const response = await fetch(url, {method: "GET"});
         const result = await response.json();
+        console.log(JSON.stringify(result));
         if (isSubscribed) {
           //setData(result);
           users = result;
@@ -297,7 +310,9 @@ const Team = () => {
                 console.log(cellValues.row.email);
                 cellValues.row.actualTurnover += amountAddition;
                 var url = new URL("http://fastapi.localhost:8008/addOpenBalances/");
-                url.searchParams.append('user_id', cellValues.row.id);
+                url.searchParams.append('token', sessionStorage.getItem("token"));
+                url.searchParams.append('token', sessionStorage.getItem("token"));
+                url.searchParams.append('change_id', cellValues.row.id);
                 url.searchParams.append('amount', amountAddition);
                 const response = fetch(url, {method: "POST"});
                 window.location.reload();

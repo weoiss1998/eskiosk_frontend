@@ -13,6 +13,7 @@ import {
   GridActionsCellItem,
   GridRowEditStopReasons,
 } from '@mui/x-data-grid';
+import {AuthCheck} from "../../components/authcheck";
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -79,6 +80,10 @@ function EditToolbar(props) {
 }
 
 export default function FullFeaturedCrudGrid() {
+  var auth = AuthCheck();
+  if (auth === false) {
+    navigate("/login");
+  }
   const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState({});
 

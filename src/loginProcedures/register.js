@@ -62,7 +62,7 @@ const Register = (props) => {
             headers: {
                 'Content-Type': 'application/json'
               },
-            body: JSON.stringify({email: email, hash_pw: password})
+            body: JSON.stringify({email: email, hash_pw: password, name: "name name"})
         });
         const obj = await response.json()
         if (response.status===400){

@@ -117,6 +117,7 @@ useEffect(() => {
 async function sendMoney(values) {
   var url = new URL("http://fastapi.localhost:8008/sendMoney/");
   url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+  url.searchParams.append('token', sessionStorage.getItem("token"));
   url.searchParams.append('email', values.email);
   url.searchParams.append('amount', values.amount);
   const response = await fetch(url, {method: "POST",});

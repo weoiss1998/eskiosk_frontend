@@ -17,6 +17,8 @@ let products;
 
 async function getDb() {
   var url = new URL("http://fastapi.localhost:8008/createBackup/");
+  url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+  url.searchParams.append('token', sessionStorage.getItem("token"));
   const response = await fetch(url, {method: "GET",});
   response.blob().then(blob => {
     const url = window.URL.createObjectURL(new Blob([blob]));
@@ -33,6 +35,10 @@ var fileUploaded;
 
 
 const Settings = (props) => {
+var auth = AuthCheck();
+if (auth === false) {
+  navigate("/login");
+}
 const hiddenFileInput = useRef(null); 
 //const [data, setData] = useState([]);
 const navigate = useNavigate();

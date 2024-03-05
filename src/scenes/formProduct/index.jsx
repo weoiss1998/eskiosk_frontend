@@ -6,15 +6,23 @@ import Header from "../../components/Header";
 import { useEffect, useState, useRef } from "react";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
+import {AuthCheck} from "../../components/authcheck";
 
 var picture="";
 
 const FormProduct = () => {
+  var auth = AuthCheck();
+  if (auth === false) {
+    navigate("/login");
+  }
   const hiddenFileInput = useRef(null); 
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   async function postNewProduct(values) {
-    const response = await fetch("http://fastapi.localhost:8008/products/", {
+    var url = new URL("http://fastapi.localhost:8008/products/");
+    url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+    url.searchParams.append('token', sessionStorage.getItem("token"));
+    const response = await fetch(url, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
