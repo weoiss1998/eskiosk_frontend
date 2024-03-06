@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -31,6 +32,7 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -38,8 +40,31 @@ export default function SignUp() {
       email: data.get('email'),
       password: data.get('password'),
     });
+    var name = data.get('firstName') + " " + data.get('lastName')
+    startRegisterProcess(data.get('email'), data.get('password'), name)
   };
-
+  async function startRegisterProcess(email, password, name) {
+    const response = await fetch("http://fastapi.localhost:8008/create", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+          },
+        body: JSON.stringify({email: email, hash_pw: password, name: name})
+    });
+    const obj = await response.json()
+    if (response.status===400){
+            window.alert("An account already exists with this email address: " + email);
+            return
+    }
+    if (obj.message==="success"){
+        navigate("/verifyMail");
+    }
+    else {
+        if (window.confirm("Internal Server Error. Do you want to try again?")) {
+            navigate("/register");
+        }  
+    }
+}
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -102,12 +127,6 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -119,7 +138,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>

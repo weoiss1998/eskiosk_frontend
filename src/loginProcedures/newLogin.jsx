@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -31,14 +32,54 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    checkAccountExists(data.get('email'), data.get('password'))
   };
+  async function checkAccountExists(email, password) {
+    const response = await fetch("http://fastapi.localhost:8008/check-account", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+          },
+        body: JSON.stringify({email: email})
+    });
+    const obj = await response.json()
+    console.log(JSON.stringify(obj))
+    if (obj.is_active===true){
+        logIn(email, password) 
+    }
+    else {
+        if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
+            navigate("/register")
+        }  
+        else {
+            navigate("/")
+        }
+    }
+}
+async function logIn(email, password) {
+   const response = await fetch("http://fastapi.localhost:8008/auth", {
+    method: "POST",
+    headers: {
+        'Content-Type': 'application/json'
+      },
+    body: JSON.stringify({email: email, hash_pw: password})
+});
+const obj = await response.json();
+console.log(JSON.stringify(obj));
+if ('success' === obj.message) {
+    sessionStorage.setItem("email", email)
+    sessionStorage.setItem("user_id", obj.user_id)
+    sessionStorage.setItem("is_admin", obj.is_admin)
+    sessionStorage.setItem("token", obj.token)
+    navigate("/shop")
+} else {
+    window.alert("Wrong email or password")
+}
+}
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -79,10 +120,6 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -93,12 +130,12 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="/forgotPassword" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

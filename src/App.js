@@ -22,6 +22,11 @@ import ChangePassword from "./loginProcedures/changePassword";
 import AdminBuyHistory from "./scenes/adminBuyHistory";
 import { useLocation, Navigate } from 'react-router-dom';
 import Settings from "./scenes/settings";
+import SignIn from "./loginProcedures/newLogin";
+import SignUp from "./loginProcedures/newRegister";
+import NewVerifyMail from "./loginProcedures/newVerifyMail";
+import NewChangePassword from "./loginProcedures/newChangePassword";
+import NewForgotPassword from "./loginProcedures/newForgotPassword";
 
 
 function App() {
@@ -29,7 +34,7 @@ function App() {
   const [isSidebar, setIsSidebar] = useState(true);
   const location = useLocation();
   const [cartAmount, setCartAmount] = useState(0);
-  const excludedRoutes = ['/login', '/register', '/verifymail', '/forgotPassword', '/changePassword'];
+  const excludedRoutes = ['/login', '/register', '/verifyMail', '/forgotPassword', '/changePassword'];
 
   if (sessionStorage.getItem("cart") != null ){
     let items = new Map(JSON.parse(sessionStorage.getItem("cart")));
@@ -62,12 +67,12 @@ function App() {
               <Route path="/formProduct" element={<FormProduct />} />
               <Route path="/products" element={<Products />} />
               <Route path="/buyHistory" element={<BuyHistory />} />
-              <Route path="/login" element={<Login  />} />
+              <Route path="/login" element={<SignIn  />} />
               <Route path="adminBuyHistory" element={<AdminBuyHistory/>}/>
-              <Route path="/Register" element={<Register  />} />
-              <Route path="/Verifymail" element={<VerifyMail  />} />
-              <Route path="/ForgotPassword" element={<ForgotPassword />} />
-              <Route path="/ChangePassword" element={<ChangePassword />} />
+              <Route path="/Register" element={<SignUp  />} />
+              <Route path="/verifyMail" element={<NewVerifyMail  />} />
+              <Route path="/ForgotPassword" element={<NewForgotPassword />} />
+              <Route path="/ChangePassword" element={<NewChangePassword />} />
               <Route path="/settings" element={<Settings />} />
               </Routes>
             </main>       
