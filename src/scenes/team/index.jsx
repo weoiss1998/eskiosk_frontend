@@ -8,6 +8,7 @@ import Header from "../../components/Header";
 import { Button} from "@mui/material";
 import { useEffect, useState } from "react";
 import {AuthCheck} from "../../components/authcheck";
+import { useNavigate } from "react-router-dom";
 
 class User{
   id= 0;
@@ -80,6 +81,7 @@ async function saveChanges(userList) {
 
 
 const Team = () => {
+  const navigate = useNavigate();
   const handleClick = (event, cellValues) => {
     console.log(cellValues.row);
   };

@@ -11,7 +11,7 @@ import {AuthCheck} from "../../components/authcheck";
 import { useNavigate } from "react-router-dom";
 
 
-function Product(id, name, quantity, price, total, paid, period) {
+function Product(id, name, quantity, price, total, paid, period, date) {
   this.id = id;
   this.prduct_name = name;
   this.quantity = quantity;
@@ -19,6 +19,7 @@ function Product(id, name, quantity, price, total, paid, period) {
   this.total = total;
   this.paid = paid;
   this.period = period;
+  this.date = date;
 }
 
 var salesEntryList = [];
@@ -70,6 +71,7 @@ const BuyHistory = () => {
           temp.total = salesEntries[i].quantity * salesEntries[i].price;
           temp.paid = salesEntries[i].paid;
           temp.period = salesEntries[i].period;
+          temp.date = salesEntries[i].timestamp;
           //console.log(temp);
           salesEntryList.push(temp);
           }
@@ -114,6 +116,7 @@ const BuyHistory = () => {
       headerName: "Paid",
       flex: 1,
     },
+    {field: "date", headerName: "Date", flex: 1,},
     {
       field: "period",
       headerName: "Period",

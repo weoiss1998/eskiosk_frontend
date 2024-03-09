@@ -52,6 +52,7 @@ async function checkout(listCart) {
         }*/
   sessionStorage.removeItem("cart");
   cart = [];
+  window.location.reload();
 }
 
 var cart = [];

@@ -20,8 +20,12 @@ if(sessionStorage.getItem("token") === null) {
     url.searchParams.append('token', item.token);
     const response = await fetch(url, {method: "POST"});
     const result = await response.json();
+    console.log(response.status)
     if (result.token!=item.token){
         return false;
+    }
+    if (response.status === 401) {
+      return false;
     }
   } catch (error) {
     console.error('Error fetching data:', error);

@@ -21,6 +21,7 @@ class ProductEntry {
   total = 0.0;
   paid = false;
   period = "";
+  date = "";
 }
 
 var salesEntryList = [];
@@ -67,6 +68,7 @@ const AdminBuyHistory = () => {
           temp.total = salesEntries[i].quantity * salesEntries[i].price;
           temp.paid = salesEntries[i].paid;
           temp.period = salesEntries[i].period;
+          temp.date = salesEntries[i].timestamp;
           //console.log(temp);
           salesEntryList.push(temp);
           }
@@ -87,6 +89,7 @@ const AdminBuyHistory = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
+    { field: "user_name", headerName: "User Name", flex: 1 },
     { field: "product_name", headerName: "Name" },
     {
       field: "quantity",
@@ -116,6 +119,7 @@ const AdminBuyHistory = () => {
       headerName: "Period",
       flex: 1,
     },
+    {field: "date", headerName: "Date", flex: 1,},
   ];
 
   return (
