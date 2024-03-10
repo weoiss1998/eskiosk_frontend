@@ -35,16 +35,44 @@ var users;
 async function saveChanges(userList) {
   for(let i = 0; i < userList.length; i++) {
     if(userList[i].modifiedName === true) {
-
+      var url = new URL(API_URL+"/changeNameUser/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
+      url.searchParams.append('change_id', userList[i].id);
+      url.searchParams.append('name', userList[i].name);
+      const response = await fetch(url, {method: "PATCH"});
+      await response.json();
+      userList[i].modifiedName = false;
     }
     if(userList[i].modifiedEmail === true) {
-
+      var url = new URL(API_URL+"/changeEmail/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
+      url.searchParams.append('change_id', userList[i].id);
+      url.searchParams.append('email', userList[i].email);
+      const response = await fetch(url, {method: "PATCH"});
+      await response.json();
+      userList[i].modifiedEmail = false;
     }
     if(userList[i].modifiedStatus === true) {
-
+      var url = new URL(API_URL+"/changeUserStatus/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
+      url.searchParams.append('change_id', userList[i].id);
+      url.searchParams.append('is_active', userList[i].isActive);
+      const response = await fetch(url, {method: "PATCH"});
+      await response.json();
+      userList[i].modifiedStatus = false;
     }
     if(userList[i].modifiedAccessLevel === true) {
-
+      var url = new URL(API_URL+"/changeUserAdmin/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
+      url.searchParams.append('change_id', userList[i].id);
+      url.searchParams.append('is_admin', userList[i].access);
+      const response = await fetch(url, {method: "PATCH"});
+      await response.json();
+      userList[i].modifiedAccessLevel = false;
     }
     if(userList[i].modifiedPaid === true) {
       var url = new URL(API_URL+"/changePaid/");
@@ -68,8 +96,6 @@ const Team = () => {
     console.log(cellValues.row);
   };
 
-  const changePassword = (event, cellValues) => {
-  };
 
   const closePeriod = () => {
     var url = new URL(API_URL+"/closePeriod/");
@@ -130,6 +156,17 @@ const Team = () => {
     }
   }
 
+  function enterPassword() {
+    var enteredAmount = prompt("Please enter the new password for the user");
+    if (enteredAmount == null) {
+      return false;
+    }
+    else {
+      return enteredAmount;
+    }
+
+  }
+
 
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
@@ -148,7 +185,6 @@ const Team = () => {
         url.searchParams.append('token', sessionStorage.getItem("token"));
         const response = await fetch(url, {method: "GET"});
         const result = await response.json();
-        console.log(JSON.stringify(result));
         if (isSubscribed) {
           //setData(result);
           users = result;
@@ -248,7 +284,16 @@ const Team = () => {
             variant="contained"
             color="primary"
             onClick={(event) => {
-              changePassword(event, cellValues);
+              var newPassword = enterPassword();
+              if(newPassword != false) {
+                console.log(newPassword);
+                var url = new URL(API_URL+"/changePassword/");
+                url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+                url.searchParams.append('token', sessionStorage.getItem("token"));
+                const response = fetch(url, {method: "PATCH", headers: {'Content-Type': 'application/json'}, body: JSON.stringify({change_id: cellValues.row.id, password: newPassword}),});
+                //window.location.reload();
+              }
+              
             }}
           >
             Change Password
@@ -264,12 +309,8 @@ const Team = () => {
             variant="contained"
             color="primary"
             onClick={(event) => {
-              //changePassword(event, cellValues);
               var amountAddition = enterAmount(amountAddition);
               if(amountAddition != false) {
-                console.log(amountAddition);
-                console.log(cellValues.row.id);
-                console.log(cellValues.row.email);
                 cellValues.row.actualTurnover += amountAddition;
                 var url = new URL(API_URL+"/addOpenBalances/");
                 url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
@@ -286,22 +327,6 @@ const Team = () => {
         );
       }
     },      
-    {
-      field: "Print",
-      renderCell: (cellValues) => {
-        return (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={(event) => {
-              handleClick(event, cellValues);
-            }}
-          >
-            Print
-          </Button>
-        );
-      }
-    },
   ];
 
   return (
@@ -379,10 +404,6 @@ const Team = () => {
                 userList[i].modifiedAccessLevel = true;
                 userList[i].access = props.value;
               }
-              /*if(props.field === "price") {
-                userList[i].modifiedPrice = true;
-                userList[i].price = props.value;
-              }*/
             }
           }
          // console.table(userList);
