@@ -16,6 +16,7 @@ COPY . /app
 
 ENV CI=true
 ENV PORT=3000
+ENV REACT_APP_API_URL="http://fastapi.localhost:8008"
 
 CMD [ "npm", "start" ]
 
@@ -43,7 +44,7 @@ CMD [ "npm", "start" ]
 
 # 2. For Nginx setup
 FROM nginx:alpine
-
+ENV REACT_APP_API_URL="http://fastapi.localhost:8008"
 # Copy config nginx
 COPY --from=build /app/.nginx/nginx.conf /etc/nginx/conf.d/default.conf
 

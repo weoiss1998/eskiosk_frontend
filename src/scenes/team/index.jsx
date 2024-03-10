@@ -9,13 +9,15 @@ import { Button} from "@mui/material";
 import { useEffect, useState } from "react";
 import {AuthCheck} from "../../components/authcheck";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../components/apiURL";
+
 
 class User{
   id= 0;
   name=  "";
   email = "";
   isActive = false;
-  accessLevel = false;
+  access = false;
   lastTurnover = 0.0;
   paid = false;
   actualTurnover = 0.0;
@@ -33,39 +35,19 @@ var users;
 async function saveChanges(userList) {
   for(let i = 0; i < userList.length; i++) {
     if(userList[i].modifiedName === true) {
-      /*var url = new URL("http://fastapi.localhost:8008/changeUserName/");
-      url.searchParams.append('user_id', userList[i].id);
-      url.searchParams.append('name', userList[i].name);
-      const response = await fetch(url, {method: "PATCH"});
-      await response.json();
-      userList[i].modifiedName = false;*/
+
     }
     if(userList[i].modifiedEmail === true) {
-      /*var url = new URL("http://fastapi.localhost:8008/changeMail/");
-      url.searchParams.append('user_id', userList[i].id);
-      url.searchParams.append('email', userList[i].email);
-      const response = await fetch(url, {method: "PATCH"});
-      await response.json();
-      userList[i].modifiedEmail = false;*/
+
     }
     if(userList[i].modifiedStatus === true) {
-      /*var url = new URL("http://fastapi.localhost:8008/changeStatus/");
-      url.searchParams.append('user_id', userList[i].id);
-      url.searchParams.append('status', userList[i].isActive);
-      const response = await fetch(url, {method: "PATCH"});
-      await response.json();
-      userList[i].modifiedEmail = false;*/
+
     }
     if(userList[i].modifiedAccessLevel === true) {
-      /*var url = new URL("http://fastapi.localhost:8008/changeAccessLevel/");
-      url.searchParams.append('user_id', userList[i].id);
-      url.searchParams.append('is_admin', userList[i].accessLevel);
-      const response = await fetch(url, {method: "PATCH"});
-      await response.json();
-      userList[i].modifiedAccessLevel = false;*/
+
     }
     if(userList[i].modifiedPaid === true) {
-      var url = new URL("http://fastapi.localhost:8008/changePaid/");
+      var url = new URL(API_URL+"/changePaid/");
       url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
       url.searchParams.append('token', sessionStorage.getItem("token"));
       url.searchParams.append('change_id', userList[i].id);
@@ -90,7 +72,7 @@ const Team = () => {
   };
 
   const closePeriod = () => {
-    var url = new URL("http://fastapi.localhost:8008/closePeriod/");
+    var url = new URL(API_URL+"/closePeriod/");
     url.searchParams.append('admin_id', sessionStorage.getItem("user_id"));
     url.searchParams.append('token', sessionStorage.getItem("token"));
     const response = fetch(url, {method: "POST"});
@@ -161,7 +143,7 @@ const Team = () => {
       }
       try {
         //const response = await fetch("./db.json");
-        var url = new URL("http://fastapi.localhost:8008/userData/");
+        var url = new URL(API_URL+"/userData/");
         url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
         url.searchParams.append('token', sessionStorage.getItem("token"));
         const response = await fetch(url, {method: "GET"});
@@ -183,7 +165,7 @@ const Team = () => {
           temp.name = users[i].name;
           temp.email = users[i].email;
           temp.isActive = users[i].is_active;
-          temp.accessLevel = users[i].is_admin;
+          temp.access = users[i].is_admin;
           temp.lastTurnover = users[i].last_turnover;
           temp.paid = users[i].paid;
           temp.actualTurnover = users[i].actual_turnover;
@@ -214,15 +196,17 @@ const Team = () => {
   const colors = tokens(theme.palette.mode);
   const columns = [
     { field: "id", headerName: "ID" },
-    /*{
+    {
       field: "name",
       headerName: "Name",
+      editable: true,
       flex: 1,
       cellClassName: "name-column--cell",
-    },*/
+    },
     {
       field: "email",
       headerName: "Email",
+      editable: true,
       flex: 1,
     },
     {
@@ -233,35 +217,11 @@ const Team = () => {
       flex: 1,
     },
     {
-      field: "accessLevel",
-      headerName: "Access Level",
+      field: "access",
+      headerName: "Is Admin?",
       flex: 1,
-      renderCell: ({ row: { access } }) => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            backgroundColor={
-              access === "admin"
-                ? colors.greenAccent[600]
-                : access === "manager"
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
-            }
-            borderRadius="4px"
-          >
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {access === "manager" && <SecurityOutlinedIcon />}
-            {access === "user" && <LockOpenOutlinedIcon />}
-            <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {access}
-            </Typography>
-          </Box>
-        );
-      },
+      editable: true,
+      type: "boolean",
     },
     {
       field: "lastTurnover",
@@ -311,8 +271,8 @@ const Team = () => {
                 console.log(cellValues.row.id);
                 console.log(cellValues.row.email);
                 cellValues.row.actualTurnover += amountAddition;
-                var url = new URL("http://fastapi.localhost:8008/addOpenBalances/");
-                url.searchParams.append('token', sessionStorage.getItem("token"));
+                var url = new URL(API_URL+"/addOpenBalances/");
+                url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
                 url.searchParams.append('token', sessionStorage.getItem("token"));
                 url.searchParams.append('change_id', cellValues.row.id);
                 url.searchParams.append('amount', amountAddition);
@@ -378,8 +338,8 @@ const Team = () => {
       >
         <Button
       variant="contained"
-      size="small"
-      color="primary"
+      size="medium"
+      color="secondary"
       onClick={() => {
         saveChanges(userList);
       }}
@@ -388,15 +348,15 @@ const Team = () => {
       </Button>
       <Button
       variant="contained"
-      size="small"
-      color="primary"
+      size="medium"
+      color="secondary"
       onClick={() => {
         closePeriod();
       }}
     >
       Close Period
       </Button>
-        <DataGrid checkboxSelection rows={userList} columns={columns} onCellEditCommit={(props, event) => {
+        <DataGrid rows={userList} columns={columns} onCellEditCommit={(props, event) => {
           for(let i = 0; i < userList.length; i++) { 
             if(userList[i].id === props.id) {
               if(props.field === "name") {
@@ -406,6 +366,18 @@ const Team = () => {
               if(props.field === "paid") {
                 userList[i].modifiedPaid = true;
                 userList[i].paid = props.value;
+              }
+              if(props.field === "email") {
+                userList[i].modifiedEmail = true;
+                userList[i].email = props.value;
+              }
+              if(props.field === "isActive") {
+                userList[i].modifiedStatus = true;
+                userList[i].isActive = props.value;
+              }
+              if(props.field === "access") {
+                userList[i].modifiedAccessLevel = true;
+                userList[i].access = props.value;
               }
               /*if(props.field === "price") {
                 userList[i].modifiedPrice = true;

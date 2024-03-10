@@ -3,6 +3,10 @@ services:
     build:
       context: .
     container_name: frontend
+    env_file:
+      - .env
+    environment:
+      REACT_APP_API_URL: http://fastapi.localhost:8008
     ports:
       - "80:80"
     networks:

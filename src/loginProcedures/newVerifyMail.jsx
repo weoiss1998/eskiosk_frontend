@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../components/apiURL";
 
 function Copyright(props) {
   return (
@@ -37,7 +38,7 @@ export default function NewVerifyMail() {
     checkCodeCorrect(data.get('email'), data.get('auth_code'));
   };
 async function checkCodeCorrect(email, VerifyCode) {
-  const response = await fetch("http://fastapi.localhost:8008/verify", {
+  const response = await fetch(API_URL+"/verify", {
       method: "POST",
       headers: {
           'Content-Type': 'application/json'

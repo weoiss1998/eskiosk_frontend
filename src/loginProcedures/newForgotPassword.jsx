@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../components/apiURL";
 
 function Copyright(props) {
   return (
@@ -37,7 +38,7 @@ export default function NewForgotPassword() {
     checkEMailCorrect(data.get('email'))
   };
   async function checkEMailCorrect(email) {
-    const response = await fetch("http://fastapi.localhost:8008/check-account", {
+    const response = await fetch(API_URL+"/check-account", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -46,7 +47,7 @@ export default function NewForgotPassword() {
     });
     const obj = await response.json()
     if (obj.is_active===true){
-        const new_response = await fetch("http://fastapi.localhost:8008/resetPassword", {
+        const new_response = await fetch(API_URL+"/resetPassword", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'

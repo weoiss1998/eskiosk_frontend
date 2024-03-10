@@ -3,22 +3,14 @@ import { Routes, Route } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Team from "./scenes/team";
-import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
 import Form from "./scenes/form";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Cart from "./scenes/cart";
 import Shop from "./scenes/shop";
-import FullFeaturedCrudGrid from "./scenes/test";
 import FormProduct from "./scenes/formProduct";
 import Products from "./scenes/products";
 import BuyHistory from "./scenes/buyHistory";
-import Login from "./loginProcedures/login";
-import Register from "./loginProcedures/register";
-import VerifyMail from "./loginProcedures/VerifyMail";
-import ForgotPassword from "./loginProcedures/forgotPassword";
-import ChangePassword from "./loginProcedures/changePassword";
 import AdminBuyHistory from "./scenes/adminBuyHistory";
 import { useLocation, Navigate } from 'react-router-dom';
 import Settings from "./scenes/settings";
@@ -58,12 +50,9 @@ function App() {
               <Routes>
               <Route path="/" element={<Navigate to ="/login" />}/>
               <Route path="/team" element={<Team />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/invoices" element={<Invoices />} />
               <Route path="/form" element={<Form />} />
               <Route path="/shop" element={<Shop setCartAmount={setCartAmount} cartAmount={cartAmount}/>} />
               <Route path="/cart" element={<Cart setCartAmount={setCartAmount} cartAmount={cartAmount}/>} />
-              <Route path="/test" element={<FullFeaturedCrudGrid />} />
               <Route path="/formProduct" element={<FormProduct />} />
               <Route path="/products" element={<Products />} />
               <Route path="/buyHistory" element={<BuyHistory />} />

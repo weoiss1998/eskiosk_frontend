@@ -8,11 +8,11 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import { Grid, Divider } from "@mui/material";
-import img from "./image.jpg";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import {AuthCheck} from "../../components/authcheck";
+import { API_URL } from "../../components/apiURL";
 
 
 
@@ -90,13 +90,10 @@ useEffect(() => {
     navigate("/login");    
   }
     try {
-      //const response = await fetch("./db.json");
-      const response = await fetch("http://fastapi.localhost:8008/products/");
+      const response = await fetch(API_URL+"/products/");
       const result = await response.json();
       //setData(result);
       products = result;
-      console.log(products.length)
-      //console.table(data);
       if (index < products.length) {
         var picture= img;
         if (products[index].image != null && products[index].image != ""){
@@ -104,7 +101,6 @@ useEffect(() => {
         }
         
         setCards([...cards, {image: picture ,name: products[index].name,db_id: products[index].id,quantity: products[index].quantity,price:products[index].price}]);
-        console.log(products[index].id);
         setIndex(index+1);
         
     }} catch (error) {
@@ -115,15 +111,13 @@ useEffect(() => {
 }, [products]);
 
 async function sendMoney(values) {
-  var url = new URL("http://fastapi.localhost:8008/sendMoney/");
+  var url = new URL(API_URL+"/sendMoney/");
   url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
   url.searchParams.append('token', sessionStorage.getItem("token"));
   url.searchParams.append('email', values.email);
   url.searchParams.append('amount', values.amount);
   const response = await fetch(url, {method: "POST",});
-  console.log(JSON.stringify({email: values.email, amount: values.amount}))
   const obj = await response.json()
-  console.log(response.status);
   if (response.status === 200){
     if (window.confirm("Money sent successfully")) {
     }

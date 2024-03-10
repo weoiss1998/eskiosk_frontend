@@ -42,10 +42,6 @@ const Topbar = (props) => {
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
       </Box>
 
       {/* ICONS */}
@@ -57,13 +53,10 @@ const Topbar = (props) => {
             <LightModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton>
-          <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton>
+        <IconButton onClick={() => navigate("/settings")}>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={() => navigate("/buyHistory")}>
           <PersonOutlinedIcon />
         </IconButton>
         <IconButton onClick={() => navigate("/cart")}>

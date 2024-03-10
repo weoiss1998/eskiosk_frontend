@@ -1,3 +1,4 @@
+import { API_URL } from "./apiURL";
 class Item {
     message = "";
     user_id = 0;
@@ -15,12 +16,11 @@ if(sessionStorage.getItem("token") === null) {
     item.user_id = sessionStorage.getItem("user_id");
     item.is_admin = sessionStorage.getItem("is_admin");
     item.token = sessionStorage.getItem("token");
-    var url = new URL("http://fastapi.localhost:8008/token/");
+    var url = new URL(API_URL+"/token/");
     url.searchParams.append('user_id', item.user_id);
     url.searchParams.append('token', item.token);
     const response = await fetch(url, {method: "POST"});
     const result = await response.json();
-    console.log(response.status)
     if (result.token!=item.token){
         return false;
     }

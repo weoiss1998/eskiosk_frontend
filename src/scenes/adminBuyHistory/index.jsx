@@ -9,6 +9,8 @@ import { Button} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {AuthCheck} from "../../components/authcheck";
+import { API_URL } from "../../components/apiURL";
+
 
 
 class ProductEntry {
@@ -40,9 +42,7 @@ const AdminBuyHistory = () => {
       }
     const fetchData = async () => {
       try {
-        //const response = await fetch("./db.json");
-        //const response = await fetch("http://fastapi.localhost:8008/salesEntries/");
-        var url = new URL("http://fastapi.localhost:8008/salesEntries/");
+        var url = new URL(API_URL+"/salesEntries/");
         url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
         url.searchParams.append('token', sessionStorage.getItem("token"));
         const response = await fetch(url, {method: "GET"});

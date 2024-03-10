@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../components/apiURL";
 
 function Copyright(props) {
   return (
@@ -39,7 +40,7 @@ export default function SignIn() {
     checkAccountExists(data.get('email'), data.get('password'))
   };
   async function checkAccountExists(email, password) {
-    const response = await fetch("http://fastapi.localhost:8008/check-account", {
+    const response = await fetch(API_URL+"/check-account", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -61,7 +62,7 @@ export default function SignIn() {
     }
 }
 async function logIn(email, password) {
-   const response = await fetch("http://fastapi.localhost:8008/auth", {
+   const response = await fetch(API_URL+"/auth", {
     method: "POST",
     headers: {
         'Content-Type': 'application/json'

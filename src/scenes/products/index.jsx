@@ -3,37 +3,49 @@ import { DataGrid  } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Button} from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {AuthCheck} from "../../components/authcheck";
-
-const product = {
-  id: 0,
-  name: "Dummy",
-  db_id: 0,
-  quantity: 1,
-  price: 10.99,
-  modifiedName: false,
-  modifiedQuantity: false,
-  modifiedPrice: false
-};
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { styled } from "@mui/material/styles";
+import Avatar from '@mui/material/Avatar';
+import { API_URL } from "../../components/apiURL";
 
 class Product{
   id= 0;
   name=  "";
   quantity = 1;
   price = 10.99;
+  type_of_product = "Food";
+  is_active = true;
+  image = "";
   modifiedName = false;
   modifiedQuantity = false;
   modifiedPrice = false;
+  modifiedType = false;
+  modifiedIsActive = false;
+  modifiedImage = false;
+  newImg = false;
 }
 
 var productList = [];
 var products;
 
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
+
 async function saveChanges(productList) {
   for(let i = 0; i < productList.length; i++) {
     if(productList[i].modifiedName === true) {
-      var url = new URL("http://fastapi.localhost:8008/changename/");
+      var url = new URL(API_URL+"/changename/");
       url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
       url.searchParams.append('token', sessionStorage.getItem("token"));
       url.searchParams.append('product_id', productList[i].id);
@@ -43,7 +55,7 @@ async function saveChanges(productList) {
       productList[i].modifiedName = false;
     }
     if(productList[i].modifiedQuantity === true) {
-      var url = new URL("http://fastapi.localhost:8008/changestock/");
+      var url = new URL(API_URL+"/changeStock/");
       url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
       url.searchParams.append('token', sessionStorage.getItem("token"));
       url.searchParams.append('product_id', productList[i].id);
@@ -53,7 +65,7 @@ async function saveChanges(productList) {
       productList[i].modifiedQuantity = false;
     }
     if(productList[i].modifiedPrice === true) {
-      var url = new URL("http://fastapi.localhost:8008/changeprice/");
+      var url = new URL(API_URL+"/changePrice/");
       url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
       url.searchParams.append('token', sessionStorage.getItem("token"));
       url.searchParams.append('product_id', productList[i].id);
@@ -62,16 +74,52 @@ async function saveChanges(productList) {
       await response.json();
       productList[i].modifiedPrice = false;
     }
+    if(productList[i].modifiedType === true) {
+      var url = new URL(API_URL+"/changeType/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
+      url.searchParams.append('product_id', productList[i].id);
+      url.searchParams.append('type_of_product', productList[i].type_of_product);
+      const response = await fetch(url, {method: "PATCH"});
+      await response.json();
+      productList[i].modifiedType = false;
+    }
+    if(productList[i].modifiedIsActive === true) {
+      var url = new URL(API_URL+"/changeActive/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
+      url.searchParams.append('product_id', productList[i].id);
+      url.searchParams.append('is_active', productList[i].is_active);
+      const response = await fetch(url, {method: "PATCH"});
+      await response.json();
+      productList[i].modifiedIsActive = false;
+    }
+    if(productList[i].modifiedImage === true) {
+      var url = new URL(API_URL+"/changeImage/");
+      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+      url.searchParams.append('token', sessionStorage.getItem("token"));
+      url.searchParams.append('product_id', productList[i].id);
+      const response = await fetch(url, {
+      method: "PATCH", 
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image: productList[i].image}),
+      });
+      await response.json();
+      productList[i].modifiedImage = false;
+    }
     
   }
   window.location.reload();
 }
 
-const Products = () => {
-  const handleClick = (event, cellValues) => {
-    console.log(cellValues.row);
-  };
+var picture = "";
+var product_id=0;
 
+const Products = () => {
+  const hiddenFileInput = useRef(null);
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
 
@@ -84,7 +132,7 @@ const Products = () => {
       }
       try {
         //const response = await fetch("./db.json");
-        const response = await fetch("http://fastapi.localhost:8008/products/");
+        const response = await fetch(API_URL+"/products/");
         const result = await response.json();
         if (isSubscribed) {
           //setData(result);
@@ -102,9 +150,14 @@ const Products = () => {
           temp.quantity = products[i].quantity;
           temp.name = products[i].name;
           temp.price = products[i].price;
+          temp.type_of_product = products[i].type_of_product;
+          temp.is_active = products[i].is_active;
+          temp.image = products[i].image;
+          temp.modifiedIsActive = false;
           temp.modifiedName = false;
           temp.modifiedQuantity = false;
           temp.modifiedPrice = false;
+          temp.modifiedType = false;
           //console.log(temp);
           productList.push(temp);
           }
@@ -122,7 +175,29 @@ const Products = () => {
     return () => isSubscribed = false;
   }, [products]); 
 
+  const handleClick = (event, cellValues) => {
+    product_id = cellValues.id;    
+  };
 
+
+  const handlePicture = (event) => {
+    const fileUploaded = event.target.files[0]; // ADDED
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result.split(",")[1];
+      picture = base64String;
+      if (picture.length > 0) {
+        for(let i = 0; i < productList.length; i++) {
+          if(productList[i].id === product_id) {
+            productList[i].image = picture;
+            productList[i].modifiedImage = true;
+          }
+        }
+      }
+    };
+    reader.readAsDataURL(fileUploaded);
+  };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -134,6 +209,26 @@ const Products = () => {
       headerName: "Name",
       flex: 1,
       cellClassName: "name-column--cell",
+    },
+    {
+      field: "image",
+      headerName: "Image",
+      flex: 1,
+      renderCell: (params) =>  <Avatar alt="Image" src={`data:image/png;base64, ${params.value}`} sx={{ width: 50, height: 50 }} />,
+    },
+    {
+      field: "is_active",
+      headerName: "Is Active?",
+      editable: true,
+      type: "boolean",
+      flex: 1,
+    },
+    {
+      field: 'type_of_product',
+      headerName: 'Type of Product',
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['Food', 'Drink'],
     },
     {
       field: "quantity",
@@ -164,22 +259,32 @@ const Products = () => {
     {
       field: "price",
       editable: true,
-      headerName: "Price",
+      headerName: "Price in EUR",
       flex: 1,
     },
     {
-      field: "Print",
+      field: "updateImage",
+      flex: 1,
+      headerName: "Update Image",
       renderCell: (cellValues) => {
         return (
           <Button
-            variant="contained"
-            color="primary"
-            onClick={(event) => {
-              handleClick(event, cellValues);
-            }}
-          >
-            Print
-          </Button>
+          component="label"
+          role={undefined}
+          onClick={(event) => {
+            handleClick(event, cellValues);
+          }}
+          color="secondary"
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUploadIcon />}
+        >
+          Upload Image
+          <VisuallyHiddenInput
+            type="file"
+            onChange={handlePicture}
+          />
+        </Button>
         );
       }
     },
@@ -226,7 +331,7 @@ const Products = () => {
     >
       Save All
     </Button>
-        <DataGrid checkboxSelection rows={productList} columns={columns} onCellEditCommit={(props, event) => {
+        <DataGrid rows={productList} columns={columns} onCellEditCommit={(props, event) => {
           for(let i = 0; i < productList.length; i++) { 
             if(productList[i].id === props.id) {
               if(props.field === "name") {
@@ -240,6 +345,14 @@ const Products = () => {
               if(props.field === "price") {
                 productList[i].modifiedPrice = true;
                 productList[i].price = props.value;
+              }
+              if(props.field === "is_active") {
+                productList[i].modifiedIsActive = true;
+                productList[i].is_active = props.value;
+              }
+              if(props.field === "type_of_product") {
+                productList[i].modifiedType = true;
+                productList[i].type_of_product = props.value;
               }
             }
           }

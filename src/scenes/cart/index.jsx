@@ -5,6 +5,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import {AuthCheck} from "../../components/authcheck";
+import { API_URL } from "../../components/apiURL";
 
 const product = {
   user_id: 0,
@@ -27,7 +28,7 @@ class Product {
 }
 
 async function checkout(listCart) {
-  var url = new URL("http://fastapi.localhost:8008/cart/products/");
+  var url = new URL(API_URL+"/cart/products/");
   url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
   url.searchParams.append('token', sessionStorage.getItem("token"));
   const response = await fetch(url, {
@@ -87,7 +88,7 @@ const Cart = (prop) => {
       }
       try {
         //const response = await fetch("./db.json");
-        const response = await fetch("http://fastapi.localhost:8008/products/");
+        const response = await fetch(API_URL+"/products/");
         const result = await response.json();
         if (isSubscribed) {
           //setData(result);

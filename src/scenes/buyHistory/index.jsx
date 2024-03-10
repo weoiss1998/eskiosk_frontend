@@ -9,6 +9,7 @@ import { Button} from "@mui/material";
 import { useEffect, useState } from "react";
 import {AuthCheck} from "../../components/authcheck";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../components/apiURL";
 
 
 function Product(id, name, quantity, price, total, paid, period, date) {
@@ -38,8 +39,6 @@ const BuyHistory = () => {
         navigate("/login");
       }
       try {
-        //const response = await fetch("./db.json");
-        //const response = await fetch("http://fastapi.localhost:8008/salesEntries/");
         let user_id = 0;  //to be replaced with user id from session
         if (sessionStorage.getItem("user_id") == null) {
           return;
@@ -47,7 +46,7 @@ const BuyHistory = () => {
         else {
           user_id = sessionStorage.getItem("user_id");
         }
-        var url = new URL("http://fastapi.localhost:8008/salesEntriesID/");
+        var url = new URL(API_URL+"/salesEntriesID/");
         url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
         url.searchParams.append('token', sessionStorage.getItem("token"));
         const response = await fetch(url, {method: "GET"});

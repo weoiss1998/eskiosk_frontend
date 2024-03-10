@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../components/apiURL";
 
 function Copyright(props) {
   return (
@@ -42,7 +43,7 @@ export default function SignUp() {
     startRegisterProcess(data.get('email'), data.get('password'), name)
   };
   async function startRegisterProcess(email, password, name) {
-    const response = await fetch("http://fastapi.localhost:8008/create", {
+    const response = await fetch(API_URL+"/create", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'

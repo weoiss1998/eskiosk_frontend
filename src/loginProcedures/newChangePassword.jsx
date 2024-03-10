@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../components/apiURL";
 
 function Copyright(props) {
   return (
@@ -36,7 +37,7 @@ export default function NewChangePassword() {
     changeToNewPassword(data.get('email'),data.get('auth_code'), data.get('password'))
   };
   async function changeToNewPassword(email, VerifyCode, password) {
-    const response = await fetch("http://fastapi.localhost:8008/updatePassword", {
+    const response = await fetch(API_URL+"/updatePassword", {
         method: "PATCH",
         headers: {
             'Content-Type': 'application/json'

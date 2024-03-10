@@ -199,13 +199,6 @@ if(admin_test==="true"){
               setSelected={setSelected}
             />
 
-            <Item
-              title="Test"
-              to="/test"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
           </Box>
         </Menu>
       </ProSidebar>

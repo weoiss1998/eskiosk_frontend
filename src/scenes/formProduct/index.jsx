@@ -4,79 +4,84 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useEffect, useState, useRef } from "react";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
-import {AuthCheck} from "../../components/authcheck";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { styled } from "@mui/material/styles";
+import { AuthCheck } from "../../components/authcheck";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import { useFormikContext } from "formik";
+import { API_URL } from "../../components/apiURL";
 
-var picture="";
+var picture = "";
+
 
 const FormProduct = () => {
   var auth = AuthCheck();
   if (auth === false) {
     navigate("/login");
   }
-  const hiddenFileInput = useRef(null); 
+  const hiddenFileInput = useRef(null);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   async function postNewProduct(values) {
-    var url = new URL("http://fastapi.localhost:8008/products/");
-    url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-    url.searchParams.append('token', sessionStorage.getItem("token"));
+    var url = new URL(API_URL+"/products/");
+    url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+    url.searchParams.append("token", sessionStorage.getItem("token"));
     const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-          },
-        body: JSON.stringify({name: values.name, price: values.price, quantity: values.quantity, image: picture})
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: values.name,
+        price: values.price,
+        quantity: values.quantity,
+        image: picture,
+        type_of_product: values.type,
+      }),
     });
-    console.log(JSON.stringify({name: values.name, price: values.price, quantity: values.quantity, image: picture}))
-    const obj = await response.json()
-    if (obj.is_active===true){
-        console.log("yes")
-        window.location.reload();
+    const obj = await response.json();
+    if (obj.is_active === true) {
+      window.location.reload();
+    } else {
+      if (window.confirm("Error creating new product")) {
+      }
     }
-    else {
-        if (window.confirm("Error creating new product")) {
-        }  
-        else {
-        }
-    }
-}
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
+  }
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
   const handleFormSubmit = (values) => {
-    if (window.confirm("Do you want to create a new product?")
-    ) {
-    postNewProduct(values);   
+    if (window.confirm("Do you want to create a new product?")) {
+      console.table(values);
+      postNewProduct(values);
     }
   };
 
-  const handleClick = event => {
-    hiddenFileInput.current.click();   
+  const handleClick = (event) => {
+    hiddenFileInput.current.click();
   };
 
-  const handlePicture = event => {
+  const handlePicture = (event) => {
     const fileUploaded = event.target.files[0]; // ADDED
 
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    const base64String = reader.result.split(",")[1];
-    console.log(base64String);
-    picture = base64String;
-    // Do something with the base64String
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result.split(",")[1];
+      picture = base64String;
+      // Do something with the base64String
+    };
+    reader.readAsDataURL(fileUploaded);
   };
-  reader.readAsDataURL(fileUploaded);
-  };
-
 
   return (
     <Box m="20px">
@@ -143,20 +148,45 @@ const VisuallyHiddenInput = styled('input')({
                 helperText={touched.quantity && errors.quantity}
                 sx={{ gridColumn: "span 4" }}
               />
+              <select
+                name="type"
+                value={values.type}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                labal="Type"
+                error={!!touched.type && !!errors.type}
+                helperText={touched.type && errors.type}
+                style={{ display: "block" }}
+              >
+                <option value="" label="Select a Type">
+                  Select a Type{" "}
+                </option>
+                <option value="Drink" label="Drink">
+                  {" "}
+                  Drink
+                </option>
+                <option value="Food" label="Food">
+                  Food
+                </option>
+              </select>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-  component="label"
-  role={undefined}
-  onClick={handleClick}
-  color="secondary"
-  variant="contained"
-  tabIndex={-1}
-  startIcon={<CloudUploadIcon />}
->
-  Upload file
-  <VisuallyHiddenInput type="file" ref={hiddenFileInput} onChange={handlePicture} />
-</Button>
+              <Button
+                component="label"
+                role={undefined}
+                onClick={handleClick}
+                color="secondary"
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload file
+                <VisuallyHiddenInput
+                  type="file"
+                  ref={hiddenFileInput}
+                  onChange={handlePicture}
+                />
+              </Button>
               <Button type="submit" color="secondary" variant="contained">
                 Create New Product
               </Button>
@@ -168,34 +198,11 @@ const VisuallyHiddenInput = styled('input')({
   );
 };
 
-const phoneRegExp = /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+const phoneRegExp =
+  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
-  let patternTwoDigisAfterComma = /^\d+(\.\d{0,2})?$/;
-  const commonStringValidator = yup
-    .number()
-    .positive()
-    .test(
-      "is-decimal",
-      "The amount should be a decimal with maximum two digits after comma",
-      (val) => {
-        if (val != undefined) {
-          return patternTwoDigisAfterComma.test(val);
-        }
-        return true;
-      }
-    )
-    .min(5, "minimum 5")
-    .max(10, "maximum 10")
-    .required("Is required");
-  
-  const validationSchema = yup.object({
-    amount: commonStringValidator,
-  });
-
-
-const checkoutSchema = yup.object().shape({
-  name: yup.string().required("required"),
-  price: yup
+let patternTwoDigisAfterComma = /^\d+(\.\d{0,2})?$/;
+const commonStringValidator = yup
   .number()
   .positive()
   .test(
@@ -208,8 +215,32 @@ const checkoutSchema = yup.object().shape({
       return true;
     }
   )
-  .required("required"),
+  .min(5, "minimum 5")
+  .max(10, "maximum 10")
+  .required("Is required");
+
+const validationSchema = yup.object({
+  amount: commonStringValidator,
+});
+
+const checkoutSchema = yup.object().shape({
+  name: yup.string().required("required"),
+  price: yup
+    .number()
+    .positive()
+    .test(
+      "is-decimal",
+      "The amount should be a decimal with maximum two digits after comma",
+      (val) => {
+        if (val != undefined) {
+          return patternTwoDigisAfterComma.test(val);
+        }
+        return true;
+      }
+    )
+    .required("required"),
   quantity: yup.number().positive().required("required"),
+  type: yup.string().required("Type is required"),
   /*quantity: yup.string().email("invalid email").required("required"),
   contact: yup
     .string()
@@ -222,6 +253,7 @@ const initialValues = {
   name: "",
   price: 0,
   quantity: 0,
+  type: "",
 };
 
 export default FormProduct;
