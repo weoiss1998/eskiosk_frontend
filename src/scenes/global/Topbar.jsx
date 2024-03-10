@@ -13,6 +13,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from "react-router-dom";
 import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
+import { API_URL } from "../../components/apiURL";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -29,9 +30,22 @@ const Topbar = (props) => {
   const colorMode = useContext(ColorModeContext);
   const navigate = useNavigate();
 
-  const logOut = () => {
+  const logOut = () => {  
+    sendLogout();
     sessionStorage.clear();
     navigate("/login")
+  }
+
+  async function sendLogout() {
+    var url = new URL(API_URL+"/logout/");
+    url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
+    url.searchParams.append('token', sessionStorage.getItem("token"));
+    await fetch(url, {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
   }
 
   return (
