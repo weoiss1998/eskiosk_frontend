@@ -6,10 +6,16 @@ import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
+import ManageHistoryOutlinedIcon from '@mui/icons-material/ManageHistoryOutlined';
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
+import AddBusinessOutlinedIcon from '@mui/icons-material/AddBusinessOutlined';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -140,21 +146,21 @@ if(admin_test==="true"){
             <Item
               title="Cart"
               to="/cart"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<ShoppingCartIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Buy History"
               to="/buyHistory"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<HistoryOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Settings"
               to="/settings"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<SettingsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -169,21 +175,21 @@ if(admin_test==="true"){
             <Item
               title="Products"
               to="/products"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<Inventory2OutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Product Form"
               to="/formProduct"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<AddBusinessOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Profile Form"
               to="/form"
-              icon={<PersonOutlinedIcon />}
+              icon={<PersonAddOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -197,7 +203,7 @@ if(admin_test==="true"){
             <Item
               title="Overall Buy History"
               to="/AdminBuyHistory"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<ManageHistoryOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -304,21 +310,21 @@ else{
             <Item
               title="Cart"
               to="/cart"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<ShoppingCartIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Settings"
               to="/settings"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<SettingsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Buy History"
               to="/buyHistory"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<HistoryOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
