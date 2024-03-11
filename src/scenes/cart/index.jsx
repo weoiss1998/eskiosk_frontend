@@ -1,10 +1,10 @@
-import { Box, Typography, useTheme } from "@mui/material";
-import { Button} from "@mui/material";
+import { Box, Typography, useTheme, Stack } from "@mui/material";
+import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
-import {AuthCheck} from "../../components/authcheck";
+import { AuthCheck } from "../../components/authcheck";
 import { API_URL } from "../../components/apiURL";
 
 const product = {
@@ -14,32 +14,44 @@ const product = {
   db_id: 0,
   quantity: 1,
   price: 10.99,
-  cost: 10.99
+  cost: 10.99,
 };
 
 class Product {
   user_id = 0;
   id = 0;
-  name=  "";
+  name = "";
   quantity = 1;
   price = 10.99;
   cost = 10.99;
-  
 }
 
 async function checkout(listCart) {
-  var url = new URL(API_URL+"/cart/products/");
-  url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-  url.searchParams.append('token', sessionStorage.getItem("token"));
-  const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-              },
-            body: JSON.stringify(listCart)
-        });
-        const obj = await response.json()
-        /*if (obj.is_active===true){
+  var exec = false;
+  if (sessionStorage.getItem("confirmation_prompt") === "true") {
+    if (
+      window.confirm(
+        "Are you sure you want to checkout? This will finalize your order."
+      )
+    ) {
+      exec = true;
+    }
+  } else {
+    exec = true;
+  }
+  if (exec === true) {
+    var url = new URL(API_URL + "/cart/products/");
+    url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+    url.searchParams.append("token", sessionStorage.getItem("token"));
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(listCart),
+    });
+    const obj = await response.json();
+    /*if (obj.is_active===true){
             console.log("yes")
             logIn() 
         }
@@ -51,9 +63,10 @@ async function checkout(listCart) {
                 navigate("/")
             }
         }*/
-  sessionStorage.removeItem("cart");
-  cart = [];
-  window.location.reload();
+    sessionStorage.removeItem("cart");
+    cart = [];
+    window.location.reload();
+  }
 }
 
 var cart = [];
@@ -66,17 +79,29 @@ const Cart = (prop) => {
   const [status, setStatus] = useState(0);
 
   const handleClick = (event, cellValues) => {
-    console.log(cellValues.row);
-    console.log(cellValues.row.id);
-    cart.splice(cellValues.row.id, 1);
-    items.delete(cellValues.row.id);
-    var temp = 0;
-    items.forEach (function(value, key) {
-      temp += parseInt(value);
-    });
-    prop.setCartAmount(temp);
-    sessionStorage.setItem("cart", JSON.stringify([...items]));
-    setStatus(0);
+    var exec = false;
+    if (sessionStorage.getItem("confirmation_prompt") === "true") {
+      if (
+        window.confirm(
+          "Are you sure you want to delete this item? This will remove it from your cart."
+        )
+      ) {
+        exec = true;
+      }
+    } else {
+      exec = true;
+    }
+    if (exec === true) {
+      cart.splice(cellValues.row.id, 1);
+      items.delete(cellValues.row.id);
+      var temp = 0;
+      items.forEach(function (value, key) {
+        temp += parseInt(value);
+      });
+      prop.setCartAmount(temp);
+      sessionStorage.setItem("cart", JSON.stringify([...items]));
+      setStatus(0);
+    }
   };
 
   useEffect(() => {
@@ -88,7 +113,7 @@ const Cart = (prop) => {
       }
       try {
         //const response = await fetch("./db.json");
-        const response = await fetch(API_URL+"/products/");
+        const response = await fetch(API_URL + "/products/");
         const result = await response.json();
         if (isSubscribed) {
           //setData(result);
@@ -96,25 +121,23 @@ const Cart = (prop) => {
         }
         //console.table(data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
       if (sessionStorage.getItem("cart") == null) {
-      }
-      else {
+      } else {
         items = new Map(JSON.parse(sessionStorage.getItem("cart")));
         //console.log(JSON.stringify([...items]));
         cart = [];
-        let user_id = 1;  //to be replaced with user id from session
+        let user_id = 1; //to be replaced with user id from session
         if (sessionStorage.getItem("user_id") == null) {
-        }
-        else {
+        } else {
           user_id = sessionStorage.getItem("user_id");
         }
-        items.forEach (function(value, key) {
-          for(let i = 0; i < products.length; i++) {
+        items.forEach(function (value, key) {
+          for (let i = 0; i < products.length; i++) {
             if (products[i].id == key) {
               var temp = new Product();
-              temp.user_id = user_id;  
+              temp.user_id = user_id;
               temp.id = key;
               if (value > products[i].quantity) {
                 value = products[i].quantity;
@@ -127,10 +150,10 @@ const Cart = (prop) => {
               cart.push(temp);
             }
           }
-        })
+        });
       }
       setData(products);
-    }
+    };
     if (status === 0) {
       fetchData();
       setStatus(1);
@@ -138,13 +161,12 @@ const Cart = (prop) => {
     if (status === 1) {
       setStatus(2);
     }
-  
-    return () => isSubscribed = false;
-  }, [cart, products]); 
+
+    return () => (isSubscribed = false);
+  }, [cart, products]);
 
   const colors = tokens(theme.palette.mode);
 
-  
   const columns = [
     { field: "id", headerName: "ID" },
     {
@@ -188,7 +210,7 @@ const Cart = (prop) => {
             Delete
           </Button>
         );
-      }
+      },
     },
   ];
 
@@ -224,52 +246,78 @@ const Cart = (prop) => {
           },
         }}
       >
-              <Button
-          variant="contained"
-          size="small"
-          color="primary"
-          onClick={() => {
-            checkout(cart);
-            setStatus(0);
-            prop.setCartAmount(0);
-          }}
-        >
-          Checkout
-        </Button>
-        <Button
-          variant="contained"
-          size="small"
-          color="primary"
-          onClick={() => {
-            sessionStorage.removeItem("cart");
-            prop.setCartAmount(0);
-            cart = [];
-            setStatus(0);
-          }}
-        >
-          Delete All
-        </Button>
-
-        <DataGrid rows={cart} columns={columns}  onCellEditCommit={(props, event) => {
-          for(let i = 0; i < cart.length; i++) { 
-            if(cart[i].id === props.id) {
-              if(props.field === "quantity") {
-                if (props.value > products[i].quantity) {
-                  props.value = products[i].quantity;
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="contained"
+            size="medium"
+            color="secondary"
+            onClick={() => {
+              checkout(cart);
+              setStatus(0);
+              prop.setCartAmount(0);
+            }}
+          >
+            Checkout
+          </Button>
+          <Button
+            variant="contained"
+            size="medium"
+            color="secondary"
+            onClick={() => {
+              var exec = false;
+              if (sessionStorage.getItem("confirmation_prompt") === "true") {
+                if (
+                  window.confirm(
+                    "Are you sure you want to delete all items from your cart?"
+                  )
+                ) {
+                  exec = true;
                 }
-                cart[i].quantity = props.value;
-                cart[i].cost = cart[i].quantity * cart[i].price;
-                items.set(cart[i].id, cart[i].quantity);
-                var temp = 0;
-                items.forEach (function(value, key) {
-                  temp += parseInt(value);
-                });
-                prop.setCartAmount(temp);
-                sessionStorage.setItem("cart", JSON.stringify([...items]));
+              } else {
+                exec = true;
+              }
+              if (exec === true) {
+                sessionStorage.removeItem("cart");
+                prop.setCartAmount(0);
+                cart = [];
                 setStatus(0);
               }
-            }}}}
-            />
+            }}
+          >
+            Delete All
+          </Button>
+
+          <Typography variant="h6" color="primary">
+            Total: ${cart.reduce((acc, item) => acc + item.cost, 0)}
+          </Typography>
+        </Stack>
+
+        <DataGrid
+          rows={cart}
+          columns={columns}
+          onCellEditCommit={(props, event) => {
+            for (let i = 0; i < cart.length; i++) {
+              if (cart[i].id === props.id) {
+                if (props.field === "quantity") {
+                  if (props.value > products[i].quantity) {
+                    props.value = products[i].quantity;
+                  }
+                  cart[i].quantity = props.value;
+                  cart[i].cost = cart[i].quantity * cart[i].price;
+                  items.set(cart[i].id, cart[i].quantity);
+                  var temp = 0;
+                  items.forEach(function (value, key) {
+                    temp += parseInt(value);
+                  });
+                  prop.setCartAmount(temp);
+                  sessionStorage.setItem("cart", JSON.stringify([...items]));
+                  window.location.reload();
+                  setStatus(0);
+                }
+              }
+            }
+          }}
+        />
       </Box>
     </Box>
   );

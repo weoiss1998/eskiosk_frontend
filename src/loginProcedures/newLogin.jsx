@@ -15,24 +15,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../components/apiURL";
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  var name = "";
+  var open_balance = 0;
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -48,8 +36,9 @@ export default function SignIn() {
         body: JSON.stringify({email: email})
     });
     const obj = await response.json()
-    console.log(JSON.stringify(obj))
     if (obj.is_active===true){
+        name = obj.name;
+        open_balance = obj.open_balances;
         logIn(email, password) 
     }
     else {
@@ -70,16 +59,35 @@ async function logIn(email, password) {
     body: JSON.stringify({email: email, hash_pw: password})
 });
 const obj = await response.json();
-console.log(JSON.stringify(obj));
 if ('success' === obj.message) {
     sessionStorage.setItem("email", email)
+    sessionStorage.setItem("name", name)
     sessionStorage.setItem("user_id", obj.user_id)
     sessionStorage.setItem("is_admin", obj.is_admin)
     sessionStorage.setItem("token", obj.token)
+    sessionStorage.setItem("open_balance", open_balance)
+    getSettings(obj.user_id, obj.token)
     navigate("/shop")
 } else {
     window.alert("Wrong email or password")
 }
+}
+
+async function getSettings(user_id, token) {
+  var url = new URL(API_URL + "/getSettings/");
+  url.searchParams.append("user_id", user_id);
+  url.searchParams.append("token", token);
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+        'Content-Type': 'application/json'
+      },
+});
+const obj = await response.json();
+if (response.status === 200) {
+    sessionStorage.setItem("confirmation_prompt", obj.confirmation_prompt)
+    navigate("/shop")
+} 
 }
 
   return (
@@ -143,7 +151,6 @@ if ('success' === obj.message) {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );

@@ -43,9 +43,22 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 async function saveChanges(productList) {
+  var exec = false;
+  if (sessionStorage.getItem("confirmation_prompt") === "true") {
+    if(window.confirm(
+      "Are you sure you want to save changes? This will update the database."
+    )){
+      exec = true;
+    }
+  }
+  else {
+    exec = true;
+  }
+  if (exec === true) {
+
   for(let i = 0; i < productList.length; i++) {
     if(productList[i].modifiedName === true) {
-      var url = new URL(API_URL+"/changename/");
+      var url = new URL(API_URL+"/changeName/");
       url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
       url.searchParams.append('token', sessionStorage.getItem("token"));
       url.searchParams.append('product_id', productList[i].id);
@@ -113,7 +126,7 @@ async function saveChanges(productList) {
     
   }
   window.location.reload();
-}
+}}
 
 var picture = "";
 var product_id=0;
@@ -324,7 +337,7 @@ const Products = () => {
       > <Button
       variant="contained"
       size="small"
-      color="primary"
+      color="secondary"
       onClick={() => {
         saveChanges(productList);
       }}

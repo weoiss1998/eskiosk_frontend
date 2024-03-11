@@ -61,10 +61,18 @@ const FormProduct = () => {
     width: 1,
   });
   const handleFormSubmit = (values) => {
+    var exec = false;
+    if (sessionStorage.getItem("confirmation_prompt") ==true) {
     if (window.confirm("Do you want to create a new product?")) {
-      console.table(values);
-      postNewProduct(values);
+      exec = true;
     }
+  }
+  else {
+    exec = true;
+  }
+  if (exec) {
+  postNewProduct(values);
+  }
   };
 
   const handleClick = (event) => {

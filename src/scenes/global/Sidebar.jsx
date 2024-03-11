@@ -108,10 +108,13 @@ if(admin_test==="true"){
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  {sessionStorage.getItem("name")}
+                  <div>{sessionStorage.getItem("name")}</div>
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  VP Fancy Admin
+                  Balance: {sessionStorage.getItem("open_balance")}€
+                </Typography>
+                <Typography variant="h5" color={colors.greenAccent[500]}>
+                  Admin
                 </Typography>
               </Box>
             </Box>
@@ -275,7 +278,7 @@ else{
                   {sessionStorage.getItem("name")}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  Balance: {}
+                  Balance: {sessionStorage.getItem("open_balance")}€
                 </Typography>
               </Box>
             </Box>

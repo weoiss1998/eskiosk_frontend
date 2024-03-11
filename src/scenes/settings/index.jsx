@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme, TextField } from "@mui/material";
+import { Box, Typography, useTheme, TextField, Stack } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -12,8 +12,9 @@ import { AuthCheck } from "../../components/authcheck";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import { API_URL } from "../../components/apiURL";
 let data;
 
 async function getDb() {
@@ -34,28 +35,37 @@ async function getDb() {
 
 var fileUploaded;
 
-class AdminSettings{
+class AdminSettings {
   mail_for_purchases = true;
   confirmation_prompt = true;
   auto_invoice = false;
-  set_warning_for_product=-1;
+  set_warning_for_product = -1;
   paypal_link = "";
 }
 
-class UserSettings{
+class UserSettings {
   mail_for_purchases = true;
   confirmation_prompt = true;
 }
 
 const Settings = (props) => {
   var password = "";
-  const ref = useRef(null); 
+  const ref = useRef(null);
   var auth = AuthCheck();
   if (auth === false) {
     navigate("/login");
   }
-  const [settings, setSettings] = useState({mail_for_purchases: true, confirmation_prompt: true});
-  const [adminSettings, setAdminSettings] = useState({mail_for_purchases: true, confirmation_prompt: true, auto_invoice: false, set_warning_for_product: -1, paypal_link: ""});
+  const [settings, setSettings] = useState({
+    mail_for_purchases: true,
+    confirmation_prompt: true,
+  });
+  const [adminSettings, setAdminSettings] = useState({
+    mail_for_purchases: true,
+    confirmation_prompt: true,
+    auto_invoice: false,
+    set_warning_for_product: -1,
+    paypal_link: "",
+  });
   const hiddenFileInput = useRef(null);
   //const [data, setData] = useState([]);
   const navigate = useNavigate();
@@ -69,7 +79,6 @@ const Settings = (props) => {
     email: yup.string().required("required"), //email("invalid email").required("required"),
   });
 
-
   useEffect(() => {
     const fetchData = async () => {
       var check = await AuthCheck();
@@ -77,7 +86,7 @@ const Settings = (props) => {
         navigate("/login");
       }
       try {
-        var url = new URL("http://fastapi.localhost:8008/getSettings/");
+        var url = new URL(API_URL + "/getSettings/");
         url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
         url.searchParams.append("token", sessionStorage.getItem("token"));
         const response = await fetch(url, { method: "GET" });
@@ -89,16 +98,25 @@ const Settings = (props) => {
           temp.auto_invoice = userSettings.auto_invoice;
           temp.set_warning_for_product = userSettings.set_warning_for_product;
           temp.paypal_link = userSettings.paypal_link;
-          if (adminSettings.mail_for_purchases != temp.mail_for_purchases || adminSettings.confirmation_prompt != temp.confirmation_prompt || adminSettings.auto_invoice != temp.auto_invoice || adminSettings.set_warning_for_product != temp.set_warning_for_product || adminSettings.paypal_link != temp.paypal_link){
-          setAdminSettings(temp);
+          if (
+            adminSettings.mail_for_purchases != temp.mail_for_purchases ||
+            adminSettings.confirmation_prompt != temp.confirmation_prompt ||
+            adminSettings.auto_invoice != temp.auto_invoice ||
+            adminSettings.set_warning_for_product !=
+              temp.set_warning_for_product ||
+            adminSettings.paypal_link != temp.paypal_link
+          ) {
+            setAdminSettings(temp);
           }
-        }
-        else{
+        } else {
           var temp = new UserSettings();
           temp.mail_for_purchases = userSettings.mail_for_purchases;
           temp.confirmation_prompt = userSettings.confirmation_prompt;
 
-          if (settings.mail_for_purchases != temp.mail_for_purchases || settings.confirmation_prompt != temp.confirmation_prompt){
+          if (
+            settings.mail_for_purchases != temp.mail_for_purchases ||
+            settings.confirmation_prompt != temp.confirmation_prompt
+          ) {
             setSettings(temp);
           }
         }
@@ -114,17 +132,14 @@ const Settings = (props) => {
     //var name = String(file.name);
     form.append("file", file);
 
-    const response = await fetch(
-      "http://fastapi.localhost:8008/restoreBackup/",
-      {
-        method: "POST",
-        /*headers: {
+    const response = await fetch(API_URL + "/restoreBackup/", {
+      method: "POST",
+      /*headers: {
         'accept': 'application/json',
         'Content-Type': 'multipart/form-data'
     },*/
-        body: form,
-      }
-    );
+      body: form,
+    });
     const obj = await response.json();
     if (response.status === 400) {
       alert(obj.detail);
@@ -132,55 +147,83 @@ const Settings = (props) => {
   }
 
   async function handleDBCall(event) {
-    if(event.target.name === "mail_for_purchases"){
-      var url = new URL("http://fastapi.localhost:8008/change_mail_for_purchases/");
+    if (event.target.name === "mail_for_purchases") {
+      var url = new URL(API_URL + "/change_mail_for_purchases/");
       url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
       url.searchParams.append("token", sessionStorage.getItem("token"));
       url.searchParams.append("mail_for_purchases", event.target.checked);
       const response = await fetch(url, { method: "PATCH" });
-      if (response.status === 200){
-      setAdminSettings({...adminSettings, mail_for_purchases: event.target.checked});
+      if (response.status === 200) {
+        setAdminSettings({
+          ...adminSettings,
+          mail_for_purchases: event.target.checked,
+        });
       }
-
-    }
-    else if(event.target.name === "confirmation_prompt"){
-      var url = new URL("http://fastapi.localhost:8008/change_confirmation_prompt/");
+    } else if (event.target.name === "confirmation_prompt") {
+      var url = new URL(API_URL + "/change_confirmation_prompt/");
       url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
       url.searchParams.append("token", sessionStorage.getItem("token"));
       url.searchParams.append("confirmation_prompt", event.target.checked);
       const response = await fetch(url, { method: "PATCH" });
-      if (response.status === 200){
-      setAdminSettings({...adminSettings, confirmation_prompt: event.target.checked});
-      }    
-    }
-    else if(event.target.name === "auto_invoice"){
-      var url = new URL("http://fastapi.localhost:8008/change_auto_invoice/");
+      if (response.status === 200) {
+        setAdminSettings({
+          ...adminSettings,
+          confirmation_prompt: event.target.checked,
+        });
+      }
+    } else if (event.target.name === "auto_invoice") {
+      var url = new URL(API_URL + "/change_auto_invoice/");
       url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
       url.searchParams.append("token", sessionStorage.getItem("token"));
       url.searchParams.append("auto_invoice", event.target.checked);
       const response = await fetch(url, { method: "PATCH" });
-      if (response.status === 200){
-      setAdminSettings({...adminSettings, auto_invoice: event.target.checked});
+      if (response.status === 200) {
+        setAdminSettings({
+          ...adminSettings,
+          auto_invoice: event.target.checked,
+        });
       }
-    }
-    else if(event.target.id === "set_warning_for_product"){
-      var url = new URL("http://fastapi.localhost:8008/change_set_warning_for_product/");
+    } else if (event.target.id === "set_warning_for_product") {
+      var url = new URL(API_URL + "/change_set_warning_for_product/");
       url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
       url.searchParams.append("token", sessionStorage.getItem("token"));
       url.searchParams.append("set_warning_for_product", event.target.value);
       const response = await fetch(url, { method: "PATCH" });
-      if (response.status === 200){
-      setAdminSettings({...adminSettings, set_warning_for_product: event.target.value});
+      if (response.status === 200) {
+        setAdminSettings({
+          ...adminSettings,
+          set_warning_for_product: event.target.value,
+        });
       }
-    }
-    else if(event.target.id === "paypal_link"){
-      var url = new URL("http://fastapi.localhost:8008/changePayPalLink/");
+    } else if (event.target.id === "paypal_link") {
+      var url = new URL(API_URL + "/changePayPalLink/");
       url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
       url.searchParams.append("token", sessionStorage.getItem("token"));
       url.searchParams.append("link", event.target.value);
       const response = await fetch(url, { method: "PATCH" });
-      if (response.status === 200){
-      setAdminSettings({...adminSettings, paypal_link: event.target.value});
+      if (response.status === 200) {
+        setAdminSettings({ ...adminSettings, paypal_link: event.target.value });
+      }
+    }
+  }
+  async function handleSwitches(event) {
+    if (event.target.name === "mail_for_purchases") {
+      var url = new URL(API_URL + "/change_mail_for_purchases/");
+      url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+      url.searchParams.append("token", sessionStorage.getItem("token"));
+      url.searchParams.append("mail_for_purchases", event.target.checked);
+      const response = await fetch(url, { method: "PATCH" });
+      if (response.status === 200) {
+        setSettings({ ...settings, mail_for_purchases: event.target.checked });
+      }
+    } else if (event.target.name === "confirmation_prompt") {
+      var url = new URL(API_URL + "/change_confirmation_prompt/");
+      url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+      url.searchParams.append("token", sessionStorage.getItem("token"));
+      url.searchParams.append("confirmation_prompt", event.target.checked);
+      const response = await fetch(url, { method: "PATCH" });
+      if (response.status === 200) {
+        setSettings({ ...settings, confirmation_prompt: event.target.checked });
       }
     }
   }
@@ -188,31 +231,39 @@ const Settings = (props) => {
     handleDBCall(event);
   };
 
-  async function updatePassword(values){
-    var url = new URL("http://fastapi.localhost:8008/updateNewPassword/");
-    if (values === ""){
+  const handleUserSwitchChange = (event) => {
+    handleSwitches(event);
+  };
+
+  async function updatePassword(values) {
+    var url = new URL(API_URL + "/updateNewPassword/");
+    if (values === "") {
       alert("Password is empty");
       return;
     }
-    if(values.length < 8 && false){ //TODO: remove true
+    if (values.length < 8) {
       alert("Password is too short");
       return;
     }
-    if(window.confirm("Do you want to update your password?") === true){
-    const response = await fetch(url, { method: "PATCH",headers: {
-      'Content-Type': 'application/json'
-    }, body: JSON.stringify({user_id: sessionStorage.getItem("user_id"),token: sessionStorage.getItem("token"), password: values}) });
-    if (response.status === 200){
-      alert("Password updated");
-    }
-    else
-    {
-      alert("Password not updated");
+    if (window.confirm("Do you want to update your password?") === true) {
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: sessionStorage.getItem("user_id"),
+          token: sessionStorage.getItem("token"),
+          password: values,
+        }),
+      });
+      if (response.status === 200) {
+        alert("Password updated");
+      } else {
+        alert("Password not updated");
+      }
     }
   }
-  }
-
-  
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -232,8 +283,7 @@ const Settings = (props) => {
 
   const handleTextFieldChange = (event) => {
     password = event.target.value;
-  }
-
+  };
 
   const handleDBUpload = (event) => {
     setFile(event.target.files[0]);
@@ -310,7 +360,7 @@ const Settings = (props) => {
           <Button
             variant="contained"
             size="small"
-            color="primary"
+            color="secondary"
             onClick={() => {
               getDb();
             }}
@@ -318,84 +368,122 @@ const Settings = (props) => {
             Download Database
           </Button>
           <br />
-          <Button
-            component="label"
-            role={undefined}
-            onClick={handleClick}
-            color="secondary"
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
-          >
-            Upload file
-            <VisuallyHiddenInput
-              type="file"
-              ref={hiddenFileInput}
-              onChange={handleDBUpload}
-            />
-          </Button>
-
-          <Button
-            variant="contained"
-            size="small"
-            color="primary"
-            onClick={() => {
-              postDB(fileUploaded);
-            }}
-          >
-            Send to Server
-          </Button>
+          <br />
+          <Stack direction="row" spacing={1}>
+            <Button
+              component="label"
+              role={undefined}
+              onClick={handleClick}
+              color="secondary"
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+            >
+              Upload file
+              <VisuallyHiddenInput
+                type="file"
+                ref={hiddenFileInput}
+                onChange={handleDBUpload}
+              />
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={() => {
+                postDB(fileUploaded);
+              }}
+            >
+              Send to Server
+            </Button>
+          </Stack>
           <br />
           <br />
           <FormGroup>
-          <FormControlLabel control={<Switch checked={adminSettings.mail_for_purchases} color="secondary" onChange={handleSwitchChange} name="mail_for_purchases"/> }label="A Mail for every purchase" /> 
-          <FormControlLabel control={<Switch checked={adminSettings.confirmation_prompt} color="secondary" onChange={handleSwitchChange} name="confirmation_prompt"/>} label="Always show a confirmation when performing an action" />
-          <FormControlLabel control={<Switch checked={adminSettings.auto_invoice} color="secondary" onChange={handleSwitchChange} name="auto_invoice"/>} label="Create at the start of the month an invoice for all user" />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={adminSettings.mail_for_purchases}
+                  color="secondary"
+                  onChange={handleSwitchChange}
+                  name="mail_for_purchases"
+                />
+              }
+              label="A Mail for every purchase"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={adminSettings.confirmation_prompt}
+                  color="secondary"
+                  onChange={handleSwitchChange}
+                  name="confirmation_prompt"
+                />
+              }
+              label="Always show a confirmation when performing an action"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={adminSettings.auto_invoice}
+                  color="secondary"
+                  onChange={handleSwitchChange}
+                  name="auto_invoice"
+                />
+              }
+              label="Create at the start of the month an invoice for all user"
+            />
           </FormGroup>
           <TextField
-          id="set_warning_for_product"
-          label="-1 for Disabling"
-          type="number"
-          value={adminSettings.set_warning_for_product}
-          defaultValue={adminSettings.set_warning_for_product}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            inputProps: { 
-                max: 100, min: -1 
-            }
-        }}
-          onChange={handleSwitchChange}
-        />Warning that a product has only X on stock <br />
-        <br />
-        <TextField
-          id="paypal_link"
-          label="PayPal.me Link"
-          type="text"
-          value={adminSettings.paypal_link}
-          defaultValue={adminSettings.paypal_link}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={handleSwitchChange}
-        />
-        <br />
-
-                <TextField
-                  variant="filled"
-                  type="password"
-                  label="password"
-                  onChange={(e) => handleTextFieldChange(e)} 
-                  name="password"
-                  sx={{ gridColumn: "span 2" }}
-                />
-                <Button type="submit" color="secondary" variant="contained" onClick={() => {
+            id="set_warning_for_product"
+            label="-1 for Disabling"
+            type="number"
+            value={adminSettings.set_warning_for_product}
+            defaultValue={adminSettings.set_warning_for_product}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            InputProps={{
+              inputProps: {
+                max: 100,
+                min: -1,
+              },
+            }}
+            onChange={handleSwitchChange}
+          />
+          Warning that a product has only X on stock <br />
+          <br />
+          <TextField
+            id="paypal_link"
+            label="PayPal.me Link"
+            type="text"
+            value={adminSettings.paypal_link}
+            defaultValue={adminSettings.paypal_link}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={handleSwitchChange}
+          />
+          <br />
+          <br />
+          <TextField
+            variant="filled"
+            type="password"
+            label="password"
+            onChange={(e) => handleTextFieldChange(e)}
+            name="password"
+            sx={{ gridColumn: "span 2" }}
+          />
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            onClick={() => {
               updatePassword(password);
-            }}>
-                  Update Password
-                </Button>
-
+            }}
+          >
+            Update Password
+          </Button>
         </Box>
 
         {/*</Box>
@@ -405,7 +493,7 @@ const Settings = (props) => {
   } else {
     return (
       <Box m="20px">
-        <Header title="Shop" subtitle="Products to buy" />
+        <Header title="Settings" />
         <Box
           m="40px 0 0 0"
           height="75vh"
@@ -435,90 +523,68 @@ const Settings = (props) => {
             },
           }}
         >
-          <Box
-            display="grid"
-            gridTemplateColumns="repeat(12, 1fr)"
-            gridAutoRows="140px"
-            gap="20px"
-          >
-            {/* ROW 1 */}
-            <Box
-              gridColumn="span 3"
-              backgroundColor={colors.primary[400]}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              sx={{width: 100}}
-            >
-              <Button
-                variant="contained"
-                size="small"
-                color="primary"
-                onClick={() => {
-                  getDb();
-                }}
-              >
-                Download Database
-              </Button>
-            </Box>
-            <Box
-              gridColumn="span 3"
-              backgroundColor={colors.primary[400]}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Button
-                component="label"
-                role={undefined}
-                onClick={handleClick}
-                color="secondary"
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-              >
-                Upload file
-                <VisuallyHiddenInput
-                  type="file"
-                  ref={hiddenFileInput}
-                  onChange={handleDBUpload}
-                />
-              </Button>
+          {/*<Box
+      display="grid"
+      gridTemplateColumns="repeat(12, 1fr)"
+      gridAutoRows="140px"
+      gap="20px"
+    >
+      {/* ROW 1 */}
+          {/*<Box
+        backgroundColor={colors.primary[400]}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >*/}
 
-              <Button
-                variant="contained"
-                size="small"
-                color="primary"
-                onClick={() => {
-                  postDB(fileUploaded);
-                }}
-              >
-                Send to Server
-              </Button>
-            </Box>
-            <Box
-              gridColumn="span 3"
-              backgroundColor={colors.primary[400]}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              {/*Box Inhalt hier*/}
-            </Box>
-            <Box
-              gridColumn="span 3"
-              backgroundColor={colors.primary[400]}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <FormGroup>
-              <FormControlLabel control={<Switch /*checked={settings.mail_for_purchases} color="secondary" name="mail_f_p"*/defaultChecked/> }label="Test" /> 
-              <FormControlLabel control={<Switch /*checked={settings.confirmation_prompt} color="secondary" name="conf_prompt"*//>} label="Always show a confirmation when performing an action" />
-              </FormGroup>
-            </Box>
-          </Box>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={settings.mail_for_purchases}
+                  color="secondary"
+                  onChange={handleUserSwitchChange}
+                  name="mail_for_purchases"
+                />
+              }
+              label="A Mail for every purchase"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={settings.confirmation_prompt}
+                  color="secondary"
+                  onChange={handleUserSwitchChange}
+                  name="confirmation_prompt"
+                />
+              }
+              label="Always show a confirmation when performing an action"
+            />
+          </FormGroup>
+          <br />
+
+          <TextField
+            variant="filled"
+            type="password"
+            label="password"
+            onChange={(e) => handleTextFieldChange(e)}
+            name="password"
+            sx={{ gridColumn: "span 2" }}
+          />
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            onClick={() => {
+              updatePassword(password);
+            }}
+          >
+            Update Password
+          </Button>
         </Box>
+
+        {/*</Box>
+</Box>*/}
       </Box>
     );
   }

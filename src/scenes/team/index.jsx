@@ -1,20 +1,19 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Stack } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
-import { Button} from "@mui/material";
+import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import {AuthCheck} from "../../components/authcheck";
+import { AuthCheck } from "../../components/authcheck";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../components/apiURL";
 
-
-class User{
-  id= 0;
-  name=  "";
+class User {
+  id = 0;
+  name = "";
   email = "";
   isActive = false;
   access = false;
@@ -33,75 +32,99 @@ var userList = [];
 var users;
 
 async function saveChanges(userList) {
-  for(let i = 0; i < userList.length; i++) {
-    if(userList[i].modifiedName === true) {
-      var url = new URL(API_URL+"/changeNameUser/");
-      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-      url.searchParams.append('token', sessionStorage.getItem("token"));
-      url.searchParams.append('change_id', userList[i].id);
-      url.searchParams.append('name', userList[i].name);
-      const response = await fetch(url, {method: "PATCH"});
-      await response.json();
-      userList[i].modifiedName = false;
+  var exec = false;
+  if (sessionStorage.getItem("confirmation_prompt") === "true") {
+    if (
+      window.confirm(
+        "Are you sure you want to save the changes? This will finalize your changes."
+      )
+    ) {
+      exec = true;
     }
-    if(userList[i].modifiedEmail === true) {
-      var url = new URL(API_URL+"/changeEmail/");
-      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-      url.searchParams.append('token', sessionStorage.getItem("token"));
-      url.searchParams.append('change_id', userList[i].id);
-      url.searchParams.append('email', userList[i].email);
-      const response = await fetch(url, {method: "PATCH"});
-      await response.json();
-      userList[i].modifiedEmail = false;
-    }
-    if(userList[i].modifiedStatus === true) {
-      var url = new URL(API_URL+"/changeUserStatus/");
-      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-      url.searchParams.append('token', sessionStorage.getItem("token"));
-      url.searchParams.append('change_id', userList[i].id);
-      url.searchParams.append('is_active', userList[i].isActive);
-      const response = await fetch(url, {method: "PATCH"});
-      await response.json();
-      userList[i].modifiedStatus = false;
-    }
-    if(userList[i].modifiedAccessLevel === true) {
-      var url = new URL(API_URL+"/changeUserAdmin/");
-      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-      url.searchParams.append('token', sessionStorage.getItem("token"));
-      url.searchParams.append('change_id', userList[i].id);
-      url.searchParams.append('is_admin', userList[i].access);
-      const response = await fetch(url, {method: "PATCH"});
-      await response.json();
-      userList[i].modifiedAccessLevel = false;
-    }
-    if(userList[i].modifiedPaid === true) {
-      var url = new URL(API_URL+"/changePaid/");
-      url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-      url.searchParams.append('token', sessionStorage.getItem("token"));
-      url.searchParams.append('change_id', userList[i].id);
-      url.searchParams.append('paid', userList[i].paid);
-      const response = await fetch(url, {method: "PATCH"});
-      await response.json();
-      userList[i].modifiedPaid = false;
-    }
-    
+  } else {
+    exec = true;
   }
-  window.location.reload();
+  if (exec === true) {
+    for (let i = 0; i < userList.length; i++) {
+      if (userList[i].modifiedName === true) {
+        var url = new URL(API_URL + "/changeNameUser/");
+        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+        url.searchParams.append("token", sessionStorage.getItem("token"));
+        url.searchParams.append("change_id", userList[i].id);
+        url.searchParams.append("name", userList[i].name);
+        const response = await fetch(url, { method: "PATCH" });
+        await response.json();
+        userList[i].modifiedName = false;
+      }
+      if (userList[i].modifiedEmail === true) {
+        var url = new URL(API_URL + "/changeEmail/");
+        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+        url.searchParams.append("token", sessionStorage.getItem("token"));
+        url.searchParams.append("change_id", userList[i].id);
+        url.searchParams.append("email", userList[i].email);
+        const response = await fetch(url, { method: "PATCH" });
+        await response.json();
+        userList[i].modifiedEmail = false;
+      }
+      if (userList[i].modifiedStatus === true) {
+        var url = new URL(API_URL + "/changeUserStatus/");
+        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+        url.searchParams.append("token", sessionStorage.getItem("token"));
+        url.searchParams.append("change_id", userList[i].id);
+        url.searchParams.append("is_active", userList[i].isActive);
+        const response = await fetch(url, { method: "PATCH" });
+        await response.json();
+        userList[i].modifiedStatus = false;
+      }
+      if (userList[i].modifiedAccessLevel === true) {
+        var url = new URL(API_URL + "/changeUserAdmin/");
+        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+        url.searchParams.append("token", sessionStorage.getItem("token"));
+        url.searchParams.append("change_id", userList[i].id);
+        url.searchParams.append("is_admin", userList[i].access);
+        const response = await fetch(url, { method: "PATCH" });
+        await response.json();
+        userList[i].modifiedAccessLevel = false;
+      }
+      if (userList[i].modifiedPaid === true) {
+        var url = new URL(API_URL + "/changePaid/");
+        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+        url.searchParams.append("token", sessionStorage.getItem("token"));
+        url.searchParams.append("change_id", userList[i].id);
+        url.searchParams.append("paid", userList[i].paid);
+        const response = await fetch(url, { method: "PATCH" });
+        await response.json();
+        userList[i].modifiedPaid = false;
+      }
+    }
+    window.location.reload();
+  }
 }
-
-
 const Team = () => {
   const navigate = useNavigate();
   const handleClick = (event, cellValues) => {
     console.log(cellValues.row);
   };
 
-
   const closePeriod = () => {
-    var url = new URL(API_URL+"/closePeriod/");
-    url.searchParams.append('admin_id', sessionStorage.getItem("user_id"));
-    url.searchParams.append('token', sessionStorage.getItem("token"));
-    const response = fetch(url, {method: "POST"});
+    var exec = false;
+    if (sessionStorage.getItem("confirmation_prompt") === "true") {
+      if (
+        window.confirm(
+          "Are you sure you want to close the period? This will finalize the period and start a new one."
+        )
+      ) {
+        exec = true;
+      }
+    } else {
+      exec = true;
+    }
+    if (exec === true) {
+      var url = new URL(API_URL + "/closePeriod/");
+      url.searchParams.append("admin_id", sessionStorage.getItem("user_id"));
+      url.searchParams.append("token", sessionStorage.getItem("token"));
+      const response = fetch(url, { method: "POST" });
+    }
   };
 
   function enterAmount(varValue) {
@@ -114,45 +137,43 @@ const Team = () => {
     var foundDot = false;
     for (i = 0, len = enteredAmount.length; i < len; i++) {
       code = enteredAmount.charCodeAt(i);
-      if(i ===0){
-        if (!(code > 47 && code < 58) && // numeric (0-9)
-          !(code === 46) &&// Dot
-        !(code === 45) 
-      ) 
-        { 
-        alert('Enter a valid amount');
-        return enterAmount();
-      }
-    }
-      else{
-      if (!(code > 47 && code < 58) && // numeric (0-9)
-          !(code === 46)// Dot
-      ) 
-        { 
-        alert('Enter a valid amount');
-        return enterAmount();
-      }
-      if(code === 46) {
-        if(foundDot === true) {
-          alert('Enter a valid amount');
+      if (i === 0) {
+        if (
+          !(code > 47 && code < 58) && // numeric (0-9)
+          !(code === 46) && // Dot
+          !(code === 45)
+        ) {
+          alert("Enter a valid amount");
           return enterAmount();
         }
-        var redLen = len - i;
-        foundDot = true; 
-        if(redLen > 3) {
-          alert('Enter a valid amount');
+      } else {
+        if (
+          !(code > 47 && code < 58) && // numeric (0-9)
+          !(code === 46) // Dot
+        ) {
+          alert("Enter a valid amount");
           return enterAmount();
         }
+        if (code === 46) {
+          if (foundDot === true) {
+            alert("Enter a valid amount");
+            return enterAmount();
+          }
+          var redLen = len - i;
+          foundDot = true;
+          if (redLen > 3) {
+            alert("Enter a valid amount");
+            return enterAmount();
+          }
+        }
       }
-    }
     }
     varValue = parseFloat(enteredAmount);
-    if(isNaN(varValue)) {
-        alert('Enter a valid amount');
-        return enterAmount();
-    }
-    else if (varValue != null) {
-        return varValue;
+    if (isNaN(varValue)) {
+      alert("Enter a valid amount");
+      return enterAmount();
+    } else if (varValue != null) {
+      return varValue;
     }
   }
 
@@ -160,13 +181,10 @@ const Team = () => {
     var enteredAmount = prompt("Please enter the new password for the user");
     if (enteredAmount == null) {
       return false;
-    }
-    else {
+    } else {
       return enteredAmount;
     }
-
   }
-
 
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
@@ -180,10 +198,10 @@ const Team = () => {
       }
       try {
         //const response = await fetch("./db.json");
-        var url = new URL(API_URL+"/userData/");
-        url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-        url.searchParams.append('token', sessionStorage.getItem("token"));
-        const response = await fetch(url, {method: "GET"});
+        var url = new URL(API_URL + "/userData/");
+        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+        url.searchParams.append("token", sessionStorage.getItem("token"));
+        const response = await fetch(url, { method: "GET" });
         const result = await response.json();
         if (isSubscribed) {
           //setData(result);
@@ -191,32 +209,32 @@ const Team = () => {
         }
         //console.table(data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
-        //console.log(JSON.stringify([...items]));
+      //console.log(JSON.stringify([...items]));
       userList = [];
-      for(let i = 0; i < users.length; i++) {
-          var temp = new User();
-          temp.id = users[i].id;
-          temp.name = users[i].name;
-          temp.email = users[i].email;
-          temp.isActive = users[i].is_active;
-          temp.access = users[i].is_admin;
-          temp.lastTurnover = users[i].last_turnover;
-          temp.paid = users[i].paid;
-          temp.actualTurnover = users[i].actual_turnover;
-          temp.salesPeriod = users[i].sales_period;
-          temp.modifiedName = false;
-          temp.modifiedEmail = false;
-          temp.modifiedStatus = false;
-          temp.modifiedAccessLevel = false;
-          temp.modifiedPaid = false;
-          //console.log(temp);
-          userList.push(temp);
-          }
-          
+      for (let i = 0; i < users.length; i++) {
+        var temp = new User();
+        temp.id = users[i].id;
+        temp.name = users[i].name;
+        temp.email = users[i].email;
+        temp.isActive = users[i].is_active;
+        temp.access = users[i].is_admin;
+        temp.lastTurnover = users[i].last_turnover;
+        temp.paid = users[i].paid;
+        temp.actualTurnover = users[i].actual_turnover;
+        temp.salesPeriod = users[i].sales_period;
+        temp.modifiedName = false;
+        temp.modifiedEmail = false;
+        temp.modifiedStatus = false;
+        temp.modifiedAccessLevel = false;
+        temp.modifiedPaid = false;
+        //console.log(temp);
+        userList.push(temp);
+      }
+
       setData(users);
-    }
+    };
     if (status === 0) {
       fetchData();
       setStatus(1);
@@ -224,9 +242,9 @@ const Team = () => {
     if (status === 1) {
       setStatus(2);
     }
-  
-    return () => isSubscribed = false;
-  }, [users]); 
+
+    return () => (isSubscribed = false);
+  }, [users]);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -285,21 +303,33 @@ const Team = () => {
             color="primary"
             onClick={(event) => {
               var newPassword = enterPassword();
-              if(newPassword != false) {
+              if (newPassword != false) {
                 console.log(newPassword);
-                var url = new URL(API_URL+"/changePassword/");
-                url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-                url.searchParams.append('token', sessionStorage.getItem("token"));
-                const response = fetch(url, {method: "PATCH", headers: {'Content-Type': 'application/json'}, body: JSON.stringify({change_id: cellValues.row.id, password: newPassword}),});
+                var url = new URL(API_URL + "/changePassword/");
+                url.searchParams.append(
+                  "user_id",
+                  sessionStorage.getItem("user_id")
+                );
+                url.searchParams.append(
+                  "token",
+                  sessionStorage.getItem("token")
+                );
+                const response = fetch(url, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    change_id: cellValues.row.id,
+                    password: newPassword,
+                  }),
+                });
                 //window.location.reload();
               }
-              
             }}
           >
             Change Password
           </Button>
         );
-      }
+      },
     },
     {
       field: "Add Money",
@@ -310,14 +340,20 @@ const Team = () => {
             color="primary"
             onClick={(event) => {
               var amountAddition = enterAmount(amountAddition);
-              if(amountAddition != false) {
+              if (amountAddition != false) {
                 cellValues.row.actualTurnover += amountAddition;
-                var url = new URL(API_URL+"/addOpenBalances/");
-                url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-                url.searchParams.append('token', sessionStorage.getItem("token"));
-                url.searchParams.append('change_id', cellValues.row.id);
-                url.searchParams.append('amount', amountAddition);
-                const response = fetch(url, {method: "POST"});
+                var url = new URL(API_URL + "/addOpenBalances/");
+                url.searchParams.append(
+                  "user_id",
+                  sessionStorage.getItem("user_id")
+                );
+                url.searchParams.append(
+                  "token",
+                  sessionStorage.getItem("token")
+                );
+                url.searchParams.append("change_id", cellValues.row.id);
+                url.searchParams.append("amount", amountAddition);
+                const response = fetch(url, { method: "POST" });
                 window.location.reload();
               }
             }}
@@ -325,8 +361,8 @@ const Team = () => {
             Add Money
           </Button>
         );
-      }
-    },      
+      },
+    },
   ];
 
   return (
@@ -361,53 +397,59 @@ const Team = () => {
           },
         }}
       >
-        <Button
-      variant="contained"
-      size="medium"
-      color="secondary"
-      onClick={() => {
-        saveChanges(userList);
-      }}
-    >
-      Save All
-      </Button>
-      <Button
-      variant="contained"
-      size="medium"
-      color="secondary"
-      onClick={() => {
-        closePeriod();
-      }}
-    >
-      Close Period
-      </Button>
-        <DataGrid rows={userList} columns={columns} onCellEditCommit={(props, event) => {
-          for(let i = 0; i < userList.length; i++) { 
-            if(userList[i].id === props.id) {
-              if(props.field === "name") {
-                userList[i].modifiedName = true;
-                userList[i].name = props.value;
-              }
-              if(props.field === "paid") {
-                userList[i].modifiedPaid = true;
-                userList[i].paid = props.value;
-              }
-              if(props.field === "email") {
-                userList[i].modifiedEmail = true;
-                userList[i].email = props.value;
-              }
-              if(props.field === "isActive") {
-                userList[i].modifiedStatus = true;
-                userList[i].isActive = props.value;
-              }
-              if(props.field === "access") {
-                userList[i].modifiedAccessLevel = true;
-                userList[i].access = props.value;
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="contained"
+            size="medium"
+            color="secondary"
+            onClick={() => {
+              saveChanges(userList);
+            }}
+          >
+            Save All
+          </Button>
+          <Button
+            variant="contained"
+            size="medium"
+            color="secondary"
+            onClick={() => {
+              closePeriod();
+            }}
+          >
+            Close Period
+          </Button>
+        </Stack>
+        <DataGrid
+          rows={userList}
+          columns={columns}
+          onCellEditCommit={(props, event) => {
+            for (let i = 0; i < userList.length; i++) {
+              if (userList[i].id === props.id) {
+                if (props.field === "name") {
+                  userList[i].modifiedName = true;
+                  userList[i].name = props.value;
+                }
+                if (props.field === "paid") {
+                  userList[i].modifiedPaid = true;
+                  userList[i].paid = props.value;
+                }
+                if (props.field === "email") {
+                  userList[i].modifiedEmail = true;
+                  userList[i].email = props.value;
+                }
+                if (props.field === "isActive") {
+                  userList[i].modifiedStatus = true;
+                  userList[i].isActive = props.value;
+                }
+                if (props.field === "access") {
+                  userList[i].modifiedAccessLevel = true;
+                  userList[i].access = props.value;
+                }
               }
             }
-          }
-         // console.table(userList);
-        }} />
+            // console.table(userList);
+          }}
+        />
       </Box>
     </Box>
   );
