@@ -30,8 +30,6 @@ const card = {
 
 let products;
 
-
-
 var resolution = 0;
 
 const Shop = (props) => {
@@ -42,7 +40,7 @@ const Shop = (props) => {
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
   const [open, setOpen] = React.useState(false);
-  const[openBuy, setOpenBuy] = React.useState(false);
+  const [openBuy, setOpenBuy] = React.useState(false);
   const [cards, setCards] = React.useState([]);
   const [type, setType] = useState(0);
   const theme = useTheme();
@@ -210,7 +208,7 @@ const Shop = (props) => {
     setOpen(true);
     props.setCartAmount(temp);
   }
-  
+
   async function SingleCheckOut(db_id, name) {
     if (window.confirm("Do you want to buy this product?")) {
       var url = new URL(API_URL + "/singleCheckOut/");

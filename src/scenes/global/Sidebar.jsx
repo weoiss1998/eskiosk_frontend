@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Typography, useTheme, Badge } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
@@ -35,7 +33,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = (props) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -146,7 +144,7 @@ if(admin_test==="true"){
             <Item
               title="Cart"
               to="/cart"
-              icon={<ShoppingCartIcon />}
+              icon={<Badge badgeContent={props.cartAmount} color="secondary"><ShoppingCartIcon /></Badge>}
               selected={selected}
               setSelected={setSelected}
             />
@@ -310,7 +308,7 @@ else{
             <Item
               title="Cart"
               to="/cart"
-              icon={<ShoppingCartIcon />}
+              icon={<Badge badgeContent={props.cartAmount} color="secondary"><ShoppingCartIcon /></Badge>}
               selected={selected}
               setSelected={setSelected}
             />
