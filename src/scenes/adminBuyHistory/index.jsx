@@ -5,13 +5,11 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
-import { Button} from "@mui/material";
+import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {AuthCheck} from "../../components/authcheck";
+import { AuthCheck } from "../../components/authcheck";
 import { API_URL } from "../../components/apiURL";
-
-
 
 class ProductEntry {
   id = 0;
@@ -37,15 +35,15 @@ const AdminBuyHistory = () => {
   useEffect(() => {
     let isSubscribed = true;
     var auth = AuthCheck();
-      if (auth === false) {
-        navigate("/login");
-      }
+    if (auth === false) {
+      navigate("/login");
+    }
     const fetchData = async () => {
       try {
-        var url = new URL(API_URL+"/salesEntries/");
-        url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-        url.searchParams.append('token', sessionStorage.getItem("token"));
-        const response = await fetch(url, {method: "GET"});
+        var url = new URL(API_URL + "/salesEntries/");
+        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+        url.searchParams.append("token", sessionStorage.getItem("token"));
+        const response = await fetch(url, { method: "GET" });
         const result = await response.json();
         if (isSubscribed) {
           //setData(result);
@@ -53,28 +51,28 @@ const AdminBuyHistory = () => {
         }
         //console.table(data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
-        //console.log(JSON.stringify([...items]));
+      //console.log(JSON.stringify([...items]));
       salesEntryList = [];
-      for(let i = 0; i < salesEntries.length; i++) {
-          var temp = new ProductEntry();
-          temp.id = salesEntries[i].id;
-          temp.user_id = salesEntries[i].user_id;
-          temp.user_name = salesEntries[i].user_name;
-          temp.quantity = salesEntries[i].quantity;
-          temp.product_name = salesEntries[i].product_name;
-          temp.price = salesEntries[i].price;
-          temp.total = salesEntries[i].quantity * salesEntries[i].price;
-          temp.paid = salesEntries[i].paid;
-          temp.period = salesEntries[i].period;
-          temp.date = salesEntries[i].timestamp;
-          //console.log(temp);
-          salesEntryList.push(temp);
-          }
-          
+      for (let i = 0; i < salesEntries.length; i++) {
+        var temp = new ProductEntry();
+        temp.id = salesEntries[i].id;
+        temp.user_id = salesEntries[i].user_id;
+        temp.user_name = salesEntries[i].user_name;
+        temp.quantity = salesEntries[i].quantity;
+        temp.product_name = salesEntries[i].product_name;
+        temp.price = salesEntries[i].price;
+        temp.total = salesEntries[i].quantity * salesEntries[i].price;
+        temp.paid = salesEntries[i].paid;
+        temp.period = salesEntries[i].period;
+        temp.date = salesEntries[i].timestamp;
+        //console.log(temp);
+        salesEntryList.push(temp);
+      }
+
       setData(salesEntries);
-    }
+    };
     if (status === 0) {
       fetchData();
       setStatus(1);
@@ -82,15 +80,15 @@ const AdminBuyHistory = () => {
     if (status === 1) {
       setStatus(2);
     }
-  
-    return () => isSubscribed = false;
-  }, [salesEntries]); 
+
+    return () => (isSubscribed = false);
+  }, [salesEntries]);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
     { field: "user_name", headerName: "User Name", flex: 1 },
-    { field: "product_name", headerName: "Name" },
+    { field: "product_name", headerName: "Name", flex: 1 },
     {
       field: "quantity",
       headerName: "Quantity",
@@ -102,12 +100,19 @@ const AdminBuyHistory = () => {
       headerName: "Price per Unit",
       type: "number",
       headerAlign: "left",
+      flex: 1,
       align: "left",
+      renderCell: (params) => (
+        <Typography>{Number(params.row.price).toFixed(2)}€</Typography>
+      ),
     },
     {
       field: "total",
       headerName: "Total",
       flex: 1,
+      renderCell: (params) => (
+        <Typography>{Number(params.row.total).toFixed(2)}€</Typography>
+      ),
     },
     {
       field: "paid",
@@ -119,7 +124,7 @@ const AdminBuyHistory = () => {
       headerName: "Period",
       flex: 1,
     },
-    {field: "date", headerName: "Date", flex: 1,},
+    { field: "date", headerName: "Date", flex: 1 },
   ];
 
   return (

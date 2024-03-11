@@ -2,12 +2,11 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { Button} from "@mui/material";
+import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import {AuthCheck} from "../../components/authcheck";
+import { AuthCheck } from "../../components/authcheck";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../components/apiURL";
-
 
 function Product(id, name, quantity, price, total, paid, period, date) {
   this.id = id;
@@ -36,17 +35,16 @@ const BuyHistory = () => {
         navigate("/login");
       }
       try {
-        let user_id = 0;  //to be replaced with user id from session
+        let user_id = 0; //to be replaced with user id from session
         if (sessionStorage.getItem("user_id") == null) {
           return;
-        }
-        else {
+        } else {
           user_id = sessionStorage.getItem("user_id");
         }
-        var url = new URL(API_URL+"/salesEntriesID/");
-        url.searchParams.append('user_id', sessionStorage.getItem("user_id"));
-        url.searchParams.append('token', sessionStorage.getItem("token"));
-        const response = await fetch(url, {method: "GET"});
+        var url = new URL(API_URL + "/salesEntriesID/");
+        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+        url.searchParams.append("token", sessionStorage.getItem("token"));
+        const response = await fetch(url, { method: "GET" });
         const result = await response.json();
         if (isSubscribed) {
           //setData(result);
@@ -54,26 +52,26 @@ const BuyHistory = () => {
         }
         //console.table(data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
-        //console.log(JSON.stringify([...items]));
+      //console.log(JSON.stringify([...items]));
       salesEntryList = [];
-      for(let i = 0; i < salesEntries.length; i++) {
-          var temp = new Product();
-          temp.id = salesEntries[i].id;
-          temp.quantity = salesEntries[i].quantity;
-          temp.product_name = salesEntries[i].product_name;
-          temp.price = salesEntries[i].price;
-          temp.total = salesEntries[i].quantity * salesEntries[i].price;
-          temp.paid = salesEntries[i].paid;
-          temp.period = salesEntries[i].period;
-          temp.date = salesEntries[i].timestamp;
-          //console.log(temp);
-          salesEntryList.push(temp);
-          }
-          
+      for (let i = 0; i < salesEntries.length; i++) {
+        var temp = new Product();
+        temp.id = salesEntries[i].id;
+        temp.quantity = salesEntries[i].quantity;
+        temp.product_name = salesEntries[i].product_name;
+        temp.price = salesEntries[i].price;
+        temp.total = salesEntries[i].quantity * salesEntries[i].price;
+        temp.paid = salesEntries[i].paid;
+        temp.period = salesEntries[i].period;
+        temp.date = salesEntries[i].timestamp;
+        //console.log(temp);
+        salesEntryList.push(temp);
+      }
+
       setData(salesEntries);
-    }
+    };
     if (status === 0) {
       fetchData();
       setStatus(1);
@@ -81,14 +79,14 @@ const BuyHistory = () => {
     if (status === 1) {
       setStatus(2);
     }
-  
-    return () => isSubscribed = false;
-  }, [salesEntries]); 
+
+    return () => (isSubscribed = false);
+  }, [salesEntries]);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
-    { field: "product_name", headerName: "Name" },
+    { field: "product_name", headerName: "Name", flex: 1 },
     {
       field: "quantity",
       headerName: "Quantity",
@@ -101,10 +99,9 @@ const BuyHistory = () => {
       type: "number",
       headerAlign: "left",
       align: "left",
+      flex: 1,
       renderCell: (params) => (
-        <Typography >
-          {Number(params.row.price).toFixed(2)}€
-        </Typography>
+        <Typography>{Number(params.row.price).toFixed(2)}€</Typography>
       ),
     },
     {
@@ -112,9 +109,7 @@ const BuyHistory = () => {
       headerName: "Total",
       flex: 1,
       renderCell: (params) => (
-        <Typography >
-          {Number(params.row.total).toFixed(2)}€
-        </Typography>
+        <Typography>{Number(params.row.total).toFixed(2)}€</Typography>
       ),
     },
     {
@@ -122,7 +117,7 @@ const BuyHistory = () => {
       headerName: "Paid",
       flex: 1,
     },
-    {field: "date", headerName: "Date", flex: 1,},
+    { field: "date", headerName: "Date", flex: 1 },
     {
       field: "period",
       headerName: "Period",

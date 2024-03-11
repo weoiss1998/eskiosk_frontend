@@ -186,9 +186,7 @@ const Cart = (prop) => {
       headerName: "Price per Unit",
       flex: 1,
       renderCell: (params) => (
-        <Typography >
-          {Number(params.row.price).toFixed(2)}€
-        </Typography>
+        <Typography>{Number(params.row.price).toFixed(2)}€</Typography>
       ),
     },
     {
@@ -196,9 +194,7 @@ const Cart = (prop) => {
       headerName: "Total Cost",
       flex: 1,
       renderCell: (params) => (
-        <Typography >
-          {Number(params.row.cost).toFixed(2)}€
-        </Typography>
+        <Typography>{Number(params.row.cost).toFixed(2)}€</Typography>
       ),
     },
     {
@@ -293,7 +289,8 @@ const Cart = (prop) => {
           </Button>
 
           <Typography variant="h6" color="secondary" size="medium">
-            Total: {Number(cart.reduce((acc, item) => acc + item.cost, 0)).toFixed(2)}€
+            Total:{" "}
+            {Number(cart.reduce((acc, item) => acc + item.cost, 0)).toFixed(2)}€
           </Typography>
         </Stack>
 
