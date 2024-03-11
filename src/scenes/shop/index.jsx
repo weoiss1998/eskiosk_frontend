@@ -247,6 +247,7 @@ const Shop = (props) => {
       <Box
         m="40px 0 0 0px"
         height="75vh"
+        padding-bottom="10px"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -278,6 +279,7 @@ const Shop = (props) => {
           gridTemplateColumns="repeat(12, 1fr)"
           gridAutoRows="140px"
           gap="20px"
+         
         >
           {/* ROW 1 */}
           <Box

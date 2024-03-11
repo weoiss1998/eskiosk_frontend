@@ -346,7 +346,7 @@ const Settings = (props) => {
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
             >
-              Upload file
+              Upload Database
               <VisuallyHiddenInput
                 type="file"
                 ref={hiddenFileInput}
