@@ -1,5 +1,4 @@
 import { Box, Typography, useTheme, TextField } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Button } from "@mui/material";
@@ -18,6 +17,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const card = {
   name: "Nature Around Us",
@@ -29,52 +30,19 @@ const card = {
 
 let products;
 
-function AddToCart(items, db_id, quantity, props) {
-  //console.log("AddToCart");
-  //console.log(items);
-  if (sessionStorage.getItem("cart") == null) {
-  } else {
-    items = new Map(JSON.parse(sessionStorage.getItem("cart")));
-  }
-  if (items.has(db_id)) {
-    items.set(db_id, items.get(db_id) + quantity);
-  } else {
-    items.set(db_id, quantity);
-  }
-  sessionStorage.setItem("cart", JSON.stringify([...items]));
-  var temp = 0;
-  items.forEach(function (value, key) {
-    temp += parseInt(value);
-  });
-  props.setCartAmount(temp);
-}
 
-async function SingleCheckOut(db_id) {
-  if (window.confirm("Do you want to buy this product?")) {
-    var url = new URL(API_URL + "/singleCheckOut/");
-    url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
-    url.searchParams.append("token", sessionStorage.getItem("token"));
-    url.searchParams.append("product_id", db_id);
-    const response = await fetch(url, { method: "POST" });
-    const obj = await response.json();
-    if (response.status === 200) {
-      if (window.confirm("Product bought successfully")) {
-      }
-    } else {
-      if (window.confirm("Error buying product")) {
-      }
-    }
-  }
-}
 
 var resolution = 0;
 
 const Shop = (props) => {
+  const [nameProduct, setName] = useState("");
   resolution = (window.screen.height * window.devicePixelRatio) / 6;
   var items = new Map(JSON.parse(sessionStorage.getItem("cart")));
   //const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
+  const [open, setOpen] = React.useState(false);
+  const[openBuy, setOpenBuy] = React.useState(false);
   const [cards, setCards] = React.useState([]);
   const [type, setType] = useState(0);
   const theme = useTheme();
@@ -101,6 +69,14 @@ const Shop = (props) => {
       )
       .required("required"),
   });
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -209,6 +185,46 @@ const Shop = (props) => {
       }
     } else {
       if (window.confirm("Error sending money")) {
+      }
+    }
+  }
+
+  function AddToCart(items, db_id, name, quantity, props) {
+    //console.log("AddToCart");
+    //console.log(items);
+    if (sessionStorage.getItem("cart") == null) {
+    } else {
+      items = new Map(JSON.parse(sessionStorage.getItem("cart")));
+    }
+    if (items.has(db_id)) {
+      items.set(db_id, items.get(db_id) + quantity);
+    } else {
+      items.set(db_id, quantity);
+    }
+    sessionStorage.setItem("cart", JSON.stringify([...items]));
+    var temp = 0;
+    items.forEach(function (value, key) {
+      temp += parseInt(value);
+    });
+    setName(name);
+    setOpen(true);
+    props.setCartAmount(temp);
+  }
+  
+  async function SingleCheckOut(db_id, name) {
+    if (window.confirm("Do you want to buy this product?")) {
+      var url = new URL(API_URL + "/singleCheckOut/");
+      url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+      url.searchParams.append("token", sessionStorage.getItem("token"));
+      url.searchParams.append("product_id", db_id);
+      const response = await fetch(url, { method: "POST" });
+      const obj = await response.json();
+      if (response.status === 200) {
+        setName(name);
+        setOpenBuy(true);
+      } else {
+        if (window.confirm("Error buying product")) {
+        }
       }
     }
   }
@@ -332,33 +348,33 @@ const Shop = (props) => {
               }) => (
                 <form onSubmit={handleSubmit}>
                   <Box display="flex" justifyContent="end" mt="20px">
-                  <Stack direction="row" spacing={1}>
-                    <TextField
-                      fullWidth
-                      variant="filled"
-                      type="text"
-                      label="email"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.name}
-                      name="email"
-                      error={!!touched.email && !!errors.email}
-                      helperText={touched.email && errors.email}
-                      sx={{ gridColumn: "span 4" }}
-                    />
-                    <TextField
-                      fullWidth
-                      variant="filled"
-                      type="text"
-                      label="Amount"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.amount}
-                      name="amount"
-                      error={!!touched.amount && !!errors.amount}
-                      helperText={touched.amount && errors.amount}
-                      sx={{ gridColumn: "span 4" }}
-                    />
+                    <Stack direction="row" spacing={1}>
+                      <TextField
+                        fullWidth
+                        variant="filled"
+                        type="text"
+                        label="email"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.name}
+                        name="email"
+                        error={!!touched.email && !!errors.email}
+                        helperText={touched.email && errors.email}
+                        sx={{ gridColumn: "span 4" }}
+                      />
+                      <TextField
+                        fullWidth
+                        variant="filled"
+                        type="text"
+                        label="Amount"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.amount}
+                        name="amount"
+                        error={!!touched.amount && !!errors.amount}
+                        helperText={touched.amount && errors.amount}
+                        sx={{ gridColumn: "span 4" }}
+                      />
                     </Stack>
                   </Box>
                   <Box display="flex" justifyContent="end" mt="20px">
@@ -397,7 +413,7 @@ const Shop = (props) => {
                       {" "}
                       only {quantity} left in stock!
                       <br />
-                      {Number(price).toFixed(2)  } €
+                      {Number(price).toFixed(2)} €
                     </Typography>
                     <Divider light />
                     <Stack direction="row" spacing={2}>
@@ -406,21 +422,49 @@ const Shop = (props) => {
                         size="medium"
                         color="secondary"
                         onClick={() => {
-                          AddToCart(items, db_id, 1, props);
+                          AddToCart(items, db_id, name, 1, props);
                         }}
                       >
                         Add to Cart
                       </Button>
-                    <Button
-                      variant="contained"
-                      size="medium"
-                      color="secondary"
-                      onClick={() => {
-                        SingleCheckOut(db_id);
-                      }}
-                    >
-                      Buy
-                    </Button>
+                      <Snackbar
+                        open={open}
+                        autoHideDuration={6000}
+                        onClose={handleClose}
+                      >
+                        <Alert
+                          onClose={handleClose}
+                          severity="success"
+                          variant="filled"
+                          sx={{ width: "100%" }}
+                        >
+                          Successfully added {nameProduct} to the cart!
+                        </Alert>
+                      </Snackbar>
+                      <Button
+                        variant="contained"
+                        size="medium"
+                        color="secondary"
+                        onClick={() => {
+                          SingleCheckOut(db_id, name);
+                        }}
+                      >
+                        Buy
+                      </Button>
+                      <Snackbar
+                        open={openBuy}
+                        autoHideDuration={6000}
+                        onClose={handleClose}
+                      >
+                        <Alert
+                          onClose={handleClose}
+                          severity="success"
+                          variant="filled"
+                          sx={{ width: "100%" }}
+                        >
+                          Successfully bought {nameProduct}!
+                        </Alert>
+                      </Snackbar>
                     </Stack>
                   </CardContent>
                 </Card>
