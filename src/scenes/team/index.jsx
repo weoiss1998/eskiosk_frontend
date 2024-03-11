@@ -186,6 +186,25 @@ const Team = () => {
     }
   }
 
+  async function closePeriodForUser(user_id) {
+        var url = new URL(API_URL + "/closePeriodForUser/");
+        url.searchParams.append("admin_id", sessionStorage.getItem("user_id"));
+        url.searchParams.append("token", sessionStorage.getItem("token"));
+        url.searchParams.append("change_id", user_id);
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (response.status === 200) {
+          alert("Period closed for user");
+        }
+        else {
+          alert("Error closing period for user");
+        }
+        //window.location.reload();
+      }
+  
+
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
 
@@ -304,7 +323,6 @@ const Team = () => {
             onClick={(event) => {
               var newPassword = enterPassword();
               if (newPassword != false) {
-                console.log(newPassword);
                 var url = new URL(API_URL + "/changePassword/");
                 url.searchParams.append(
                   "user_id",
@@ -359,6 +377,36 @@ const Team = () => {
             }}
           >
             Add Money
+          </Button>
+        );
+      },
+    },
+    {
+      field: "Close Period for User",
+      renderCell: (cellValues) => {
+        return (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={(event) => {
+              var exec = false;
+              if (sessionStorage.getItem("confirmation_prompt") === "true") {
+                if (
+                  window.confirm(
+                    "Are you sure you want to close the period for this user? This will finalize the period and start a new one."
+                  )
+                ) {
+                  exec = true;
+                }
+              } else {
+                exec = true;
+              }
+              if (exec === true) {
+              closePeriodForUser(cellValues.row.id);
+            }
+            }}
+          >
+            Close Period
           </Button>
         );
       },
