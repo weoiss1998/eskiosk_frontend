@@ -185,14 +185,19 @@ const Cart = (prop) => {
       field: "price",
       headerName: "Price per Unit",
       flex: 1,
+      renderCell: (params) => (
+        <Typography >
+          {Number(params.row.price).toFixed(2)}€
+        </Typography>
+      ),
     },
     {
       field: "cost",
       headerName: "Total Cost",
       flex: 1,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[500]}>
-          ${params.row.cost}
+        <Typography >
+          {Number(params.row.cost).toFixed(2)}€
         </Typography>
       ),
     },
@@ -287,8 +292,8 @@ const Cart = (prop) => {
             Delete All
           </Button>
 
-          <Typography variant="h6" color="primary">
-            Total: ${cart.reduce((acc, item) => acc + item.cost, 0)}
+          <Typography variant="h6" color="secondary" size="medium">
+            Total: {Number(cart.reduce((acc, item) => acc + item.cost, 0)).toFixed(2)}€
           </Typography>
         </Stack>
 

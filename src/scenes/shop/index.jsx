@@ -17,7 +17,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Badge from "@mui/material/Badge";
 import Stack from "@mui/material/Stack";
 
 const card = {
@@ -398,23 +397,20 @@ const Shop = (props) => {
                       {" "}
                       only {quantity} left in stock!
                       <br />
-                      {price} €
+                      {Number(price).toFixed(2)  } €
                     </Typography>
                     <Divider light />
                     <Stack direction="row" spacing={2}>
-                    <Badge badgeContent={cart} color="secondary">
                       <Button
                         variant="contained"
                         size="medium"
                         color="secondary"
                         onClick={() => {
                           AddToCart(items, db_id, 1, props);
-                          cart = cart + 1;
                         }}
                       >
                         Add to Cart
                       </Button>
-                    </Badge>
                     <Button
                       variant="contained"
                       size="medium"

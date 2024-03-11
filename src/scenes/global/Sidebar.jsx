@@ -117,7 +117,7 @@ if(admin_test==="true"){
                   <div>{sessionStorage.getItem("name")}</div>
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  Balance: {sessionStorage.getItem("open_balance")}€
+                  Balance: {Number( sessionStorage.getItem("open_balance")).toFixed(2)}€
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
                   Admin
@@ -284,7 +284,7 @@ else{
                   {sessionStorage.getItem("name")}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  Balance: {sessionStorage.getItem("open_balance")}€
+                  Balance: {Number(sessionStorage.getItem("open_balance")).toFixed(2)}€
                 </Typography>
               </Box>
             </Box>
