@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+import { Box, IconButton, useTheme, Badge } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -8,7 +8,6 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from "react-router-dom";
-import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
 import { API_URL } from "../../components/apiURL";
 

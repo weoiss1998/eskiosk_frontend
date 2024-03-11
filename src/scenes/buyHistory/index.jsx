@@ -2,21 +2,20 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { AuthCheck } from "../../components/authcheck";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../components/apiURL";
 
-function Product(id, name, quantity, price, total, paid, period, date) {
-  this.id = id;
-  this.prduct_name = name;
-  this.quantity = quantity;
-  this.price = price;
-  this.total = total;
-  this.paid = paid;
-  this.period = period;
-  this.date = date;
+class Product {
+  id = 0;
+  prduct_name = "";
+  quantity = 0;
+  price = 0.0;
+  total = 0.0;
+  paid = false;
+  period = 0;
+  date = "";
 }
 
 var salesEntryList = [];

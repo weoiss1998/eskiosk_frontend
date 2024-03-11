@@ -24,8 +24,13 @@ export default function SignUp() {
       email: data.get('email'),
       password: data.get('password'),
     });
-    var name = data.get('firstName') + " " + data.get('lastName')
-    startRegisterProcess(data.get('email'), data.get('password'), name)
+    var name = data.get('firstName') + " " + data.get('lastName');
+    var password = data.get('password');
+    if (password.length < 8) {
+      window.alert("Password must be at least 8 characters long");
+      return
+    }
+    startRegisterProcess(data.get('email'), data.get('password'), name);
   };
   async function startRegisterProcess(email, password, name) {
     const response = await fetch(API_URL+"/create", {

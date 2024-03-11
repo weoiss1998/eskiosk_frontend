@@ -1,9 +1,6 @@
-import { Box, Typography, useTheme, Stack } from "@mui/material";
+import { Box, useTheme, Stack } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -187,23 +184,20 @@ const Team = () => {
   }
 
   async function closePeriodForUser(user_id) {
-        var url = new URL(API_URL + "/closePeriodForUser/");
-        url.searchParams.append("admin_id", sessionStorage.getItem("user_id"));
-        url.searchParams.append("token", sessionStorage.getItem("token"));
-        url.searchParams.append("change_id", user_id);
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        });
-        if (response.status === 200) {
-          alert("Period closed for user");
-        }
-        else {
-          alert("Error closing period for user");
-        }
-        //window.location.reload();
-      }
-  
+    var url = new URL(API_URL + "/closePeriodForUser/");
+    url.searchParams.append("admin_id", sessionStorage.getItem("user_id"));
+    url.searchParams.append("token", sessionStorage.getItem("token"));
+    url.searchParams.append("change_id", user_id);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (response.status === 200) {
+      alert("Period closed for user");
+    } else {
+      alert("Error closing period for user");
+    }
+  }
 
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
@@ -216,21 +210,17 @@ const Team = () => {
         navigate("/login");
       }
       try {
-        //const response = await fetch("./db.json");
         var url = new URL(API_URL + "/userData/");
         url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
         url.searchParams.append("token", sessionStorage.getItem("token"));
         const response = await fetch(url, { method: "GET" });
         const result = await response.json();
         if (isSubscribed) {
-          //setData(result);
           users = result;
         }
-        //console.table(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-      //console.log(JSON.stringify([...items]));
       userList = [];
       for (let i = 0; i < users.length; i++) {
         var temp = new User();
@@ -248,7 +238,6 @@ const Team = () => {
         temp.modifiedStatus = false;
         temp.modifiedAccessLevel = false;
         temp.modifiedPaid = false;
-        //console.log(temp);
         userList.push(temp);
       }
 
@@ -340,7 +329,6 @@ const Team = () => {
                     password: newPassword,
                   }),
                 });
-                //window.location.reload();
               }
             }}
           >
@@ -402,8 +390,8 @@ const Team = () => {
                 exec = true;
               }
               if (exec === true) {
-              closePeriodForUser(cellValues.row.id);
-            }
+                closePeriodForUser(cellValues.row.id);
+              }
             }}
           >
             Close Period
@@ -495,7 +483,6 @@ const Team = () => {
                 }
               }
             }
-            // console.table(userList);
           }}
         />
       </Box>

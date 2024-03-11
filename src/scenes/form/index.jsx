@@ -5,8 +5,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import {AuthCheck} from "../../components/authcheck";
 import { API_URL } from "../../components/apiURL";
+import { useNavigate } from "react-router-dom";
 
 const Form = () => {
+  const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   var auth = AuthCheck();
   if (auth === false) {

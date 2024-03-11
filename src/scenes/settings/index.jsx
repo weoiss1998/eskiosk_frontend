@@ -1,21 +1,22 @@
-import { Box, Typography, useTheme, TextField, Stack } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  Box,
+  useTheme,
+  TextField,
+  Stack,
+  FormControlLabel,
+  Switch,
+  FormGroup,
+} from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Button } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { Grid, Divider } from "@mui/material";
-import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { AuthCheck } from "../../components/authcheck";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import { API_URL } from "../../components/apiURL";
-let data;
 
 async function getDb() {
   var url = new URL("http://fastapi.localhost:8008/createBackup/");
@@ -50,6 +51,7 @@ class UserSettings {
 
 const Settings = (props) => {
   var password = "";
+  const navigate = useNavigate();
   const ref = useRef(null);
   var auth = AuthCheck();
   if (auth === false) {
@@ -67,8 +69,6 @@ const Settings = (props) => {
     paypal_link: "",
   });
   const hiddenFileInput = useRef(null);
-  //const [data, setData] = useState([]);
-  const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -76,7 +76,7 @@ const Settings = (props) => {
     password: "",
   };
   const checkoutSchema = yup.object().shape({
-    email: yup.string().required("required"), //email("invalid email").required("required"),
+    email: yup.string().email("invalid email").required("required"),
   });
 
   useEffect(() => {
@@ -289,28 +289,8 @@ const Settings = (props) => {
     setFile(event.target.files[0]);
     fileUploaded = event.target.files[0]; // ADDED
     console.log(fileUploaded);
-    /*const reader = new FileReader();
-  reader.onloadend = () => {
-    const base64String = reader.result.split(",")[1];
-    console.log(base64String);
-    picture = base64String;
-    // Do something with the base64String
-  };
-  reader.readAsDataURL(fileUploaded);*/
   };
 
-  //console.table(products);
-
-  /*
-  <Box
-  display="grid"
-  gap="30px"
-  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-  sx={{
-    "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-  }}
->
-*/
   if (sessionStorage.getItem("is_admin") === "true") {
     return (
       <Box m="20px">
@@ -344,19 +324,6 @@ const Settings = (props) => {
             },
           }}
         >
-          {/*<Box
-      display="grid"
-      gridTemplateColumns="repeat(12, 1fr)"
-      gridAutoRows="140px"
-      gap="20px"
-    >
-      {/* ROW 1 */}
-          {/*<Box
-        backgroundColor={colors.primary[400]}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >*/}
           <Button
             variant="contained"
             size="small"
@@ -485,9 +452,6 @@ const Settings = (props) => {
             Update Password
           </Button>
         </Box>
-
-        {/*</Box>
-</Box>*/}
       </Box>
     );
   } else {
@@ -523,20 +487,6 @@ const Settings = (props) => {
             },
           }}
         >
-          {/*<Box
-      display="grid"
-      gridTemplateColumns="repeat(12, 1fr)"
-      gridAutoRows="140px"
-      gap="20px"
-    >
-      {/* ROW 1 */}
-          {/*<Box
-        backgroundColor={colors.primary[400]}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >*/}
-
           <FormGroup>
             <FormControlLabel
               control={
@@ -582,9 +532,6 @@ const Settings = (props) => {
             Update Password
           </Button>
         </Box>
-
-        {/*</Box>
-</Box>*/}
       </Box>
     );
   }

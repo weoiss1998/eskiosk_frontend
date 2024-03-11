@@ -1,32 +1,29 @@
-import { Box, Typography, useTheme, TextField } from "@mui/material";
+import {
+  Box,
+  Typography,
+  useTheme,
+  TextField,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  Stack,
+  Snackbar,
+  Alert,
+  Card,
+  CardMedia,
+  CardContent,
+} from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
 import { Grid, Divider } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { AuthCheck } from "../../components/authcheck";
 import { API_URL } from "../../components/apiURL";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Stack from "@mui/material/Stack";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-
-const card = {
-  name: "Nature Around Us",
-  db_id: 0,
-  quantity: 1,
-  price: "10,99",
-  image: "img",
-};
 
 let products;
 
@@ -36,7 +33,6 @@ const Shop = (props) => {
   const [nameProduct, setName] = useState("");
   resolution = (window.screen.height * window.devicePixelRatio) / 6;
   var items = new Map(JSON.parse(sessionStorage.getItem("cart")));
-  //const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
   const [open, setOpen] = React.useState(false);
@@ -51,7 +47,7 @@ const Shop = (props) => {
   };
   let patternTwoDigisAfterComma = /^\d+(\.\d{0,2})?$/;
   const checkoutSchema = yup.object().shape({
-    email: yup.string(), //email("invalid email").required("required"),
+    email: yup.string().email("invalid email").required("required"),
     amount: yup
       .number()
       .positive()
@@ -86,7 +82,6 @@ const Shop = (props) => {
         try {
           const response = await fetch(API_URL + "/products/avaiable/");
           const result = await response.json();
-          //setData(result);
           products = result;
           if (index < products.length) {
             setCards([]);
@@ -116,7 +111,6 @@ const Shop = (props) => {
         url.searchParams.append("sort", "Food");
         const response = await fetch(url);
         const result = await response.json();
-        //setData(result);
         products = result;
         if (index < products.length) {
           setCards([]);
@@ -188,8 +182,6 @@ const Shop = (props) => {
   }
 
   function AddToCart(items, db_id, name, quantity, props) {
-    //console.log("AddToCart");
-    //console.log(items);
     if (sessionStorage.getItem("cart") == null) {
     } else {
       items = new Map(JSON.parse(sessionStorage.getItem("cart")));
@@ -247,19 +239,8 @@ const Shop = (props) => {
     }
   };
 
-  //console.table(products);
   var items = new Map();
 
-  /*
-  <Box
-  display="grid"
-  gap="30px"
-  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-  sx={{
-    "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-  }}
->
-*/
   return (
     <Box m="20px">
       <Header title="Shop" subtitle="Products to buy" />

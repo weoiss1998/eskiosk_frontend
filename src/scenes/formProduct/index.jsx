@@ -3,20 +3,17 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
-import { useEffect, useState, useRef } from "react";
+import { useRef } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import { AuthCheck } from "../../components/authcheck";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import { useFormikContext } from "formik";
 import { API_URL } from "../../components/apiURL";
+import { useNavigate } from "react-router-dom";
 
 var picture = "";
 
-
 const FormProduct = () => {
+  const navigate = useNavigate();
   var auth = AuthCheck();
   if (auth === false) {
     navigate("/login");
@@ -25,7 +22,7 @@ const FormProduct = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   async function postNewProduct(values) {
-    var url = new URL(API_URL+"/products/");
+    var url = new URL(API_URL + "/products/");
     url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
     url.searchParams.append("token", sessionStorage.getItem("token"));
     const response = await fetch(url, {
@@ -62,17 +59,16 @@ const FormProduct = () => {
   });
   const handleFormSubmit = (values) => {
     var exec = false;
-    if (sessionStorage.getItem("confirmation_prompt") ==true) {
-    if (window.confirm("Do you want to create a new product?")) {
+    if (sessionStorage.getItem("confirmation_prompt") == true) {
+      if (window.confirm("Do you want to create a new product?")) {
+        exec = true;
+      }
+    } else {
       exec = true;
     }
-  }
-  else {
-    exec = true;
-  }
-  if (exec) {
-  postNewProduct(values);
-  }
+    if (exec) {
+      postNewProduct(values);
+    }
   };
 
   const handleClick = (event) => {

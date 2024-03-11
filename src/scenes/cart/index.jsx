@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import { AuthCheck } from "../../components/authcheck";
 import { API_URL } from "../../components/apiURL";
+import { useNavigate } from "react-router-dom";
 
 const product = {
   user_id: 0,
@@ -74,6 +75,7 @@ var products;
 var items;
 
 const Cart = (prop) => {
+  const navigate = useNavigate();
   const theme = useTheme();
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
@@ -101,6 +103,7 @@ const Cart = (prop) => {
       prop.setCartAmount(temp);
       sessionStorage.setItem("cart", JSON.stringify([...items]));
       setStatus(0);
+      window.location.reload();
     }
   };
 
