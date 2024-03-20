@@ -13,6 +13,7 @@ import {
   Card,
   CardMedia,
   CardContent,
+  Badge,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -98,7 +99,7 @@ const Shop = (props) => {
                 db_id: products[index].id,
                 quantity: products[index].quantity,
                 price: products[index].price,
-                cart: items.get(products[index].id),
+                cart: 0,
               },
             ]);
             setIndex(index + 1);
@@ -127,7 +128,7 @@ const Shop = (props) => {
               db_id: products[index].id,
               quantity: products[index].quantity,
               price: products[index].price,
-              cart: items.get(products[index].id),
+              cart: 0,
             },
           ]);
           setIndex(index + 1);
@@ -154,7 +155,7 @@ const Shop = (props) => {
               db_id: products[index].id,
               quantity: products[index].quantity,
               price: products[index].price,
-              cart: items.get(products[index].id),
+              cart: 0,
             },
           ]);
           setIndex(index + 1);
@@ -374,8 +375,8 @@ const Shop = (props) => {
           </Box>
         </Box>
         <Grid container spacing={5}>
-          {cards.map((cards, index) => {
-            const { image, name, db_id, quantity, price, cart } = cards;
+          {cards.map((card, index) => {
+            const { image, name, db_id, quantity, price, cart } = card;
             return (
               <Grid item>
                 <Card key={index}>
@@ -407,16 +408,33 @@ const Shop = (props) => {
                     </Typography>
                     <Divider light />
                     <Stack direction="row" spacing={2}>
-                      <Button
-                        variant="contained"
-                        size="medium"
-                        color="secondary"
-                        onClick={() => {
-                          AddToCart(items, db_id, name, 1, props);
-                        }}
-                      >
-                        Add to Cart
-                      </Button>
+                      <Badge badgeContent={cart} color="primary">
+                        <Button
+                          variant="contained"
+                          size="medium"
+                          color="secondary"
+                          onClick={() => {
+                            if (quantity === 0) {
+                              alert("No more items in stock");
+                              return;
+                            }
+                            AddToCart(items, db_id, name, 1, props);
+                            var temp_card_list = cards;
+                            for (var i = 0; i < temp_card_list.length; i++) {
+                              if (temp_card_list[i].db_id === db_id) {
+                                temp_card_list[i].quantity =
+                                  temp_card_list[i].quantity - 1;
+                                temp_card_list[i].cart =
+                                  temp_card_list[i].cart + 1;
+                                break;
+                              }
+                              setCards(temp_card_list);
+                            }
+                          }}
+                        >
+                          Add to Cart
+                        </Button>
+                      </Badge>
                       <Snackbar
                         open={open}
                         autoHideDuration={6000}
@@ -436,7 +454,20 @@ const Shop = (props) => {
                         size="medium"
                         color="secondary"
                         onClick={() => {
+                          if (quantity === 0) {
+                            alert("No more items in stock");
+                            return;
+                          }
                           SingleCheckOut(db_id, name);
+                          var temp_card_list = cards;
+                          for (var i = 0; i < temp_card_list.length; i++) {
+                            if (temp_card_list[i].db_id === db_id) {
+                              temp_card_list[i].quantity =
+                                temp_card_list[i].quantity - 1;
+                              break;
+                            }
+                            setCards(temp_card_list);
+                          }
                         }}
                       >
                         Buy
