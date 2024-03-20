@@ -376,7 +376,7 @@ const Settings = (props) => {
                   name="mail_for_purchases"
                 />
               }
-              label="A Mail for every purchase"
+              label="Send an email for every purchase"
             />
             <FormControlLabel
               control={
@@ -398,7 +398,7 @@ const Settings = (props) => {
                   name="auto_invoice"
                 />
               }
-              label="Create at the start of the month an invoice for all user"
+              label="Create an invoice for all user at the start of the month"
             />
           </FormGroup>
           <TextField
@@ -418,7 +418,7 @@ const Settings = (props) => {
             }}
             onChange={handleSwitchChange}
           />
-          Warning that a product has only X on stock <br />
+          Warning that a product has only X in stock <br />
           <br />
           <TextField
             id="paypal_link"
@@ -497,7 +497,7 @@ const Settings = (props) => {
                   name="mail_for_purchases"
                 />
               }
-              label="A Mail for every purchase"
+              label="Send an email for every purchase"
             />
             <FormControlLabel
               control={

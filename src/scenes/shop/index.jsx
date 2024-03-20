@@ -165,6 +165,11 @@ const Shop = (props) => {
   }, [products, type]);
 
   async function sendMoney(values) {
+    if (parseFloat(values.amount) > 10000) {
+      if (window.confirm("You can't send more than 10000€")) {
+        return;
+      }
+    }
     var url = new URL(API_URL + "/sendMoney/");
     url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
     url.searchParams.append("token", sessionStorage.getItem("token"));
@@ -174,6 +179,7 @@ const Shop = (props) => {
     const obj = await response.json();
     if (response.status === 200) {
       if (window.confirm("Money sent successfully")) {
+        props.setOpenBalance(props.openBalance - parseFloat(values.amount));
       }
     } else {
       if (window.confirm("Error sending money")) {
@@ -279,7 +285,6 @@ const Shop = (props) => {
           gridTemplateColumns="repeat(12, 1fr)"
           gridAutoRows="140px"
           gap="20px"
-         
         >
           {/* ROW 1 */}
           <Box
@@ -360,7 +365,7 @@ const Shop = (props) => {
                   </Box>
                   <Box display="flex" justifyContent="end" mt="20px">
                     <Button type="submit" color="secondary" variant="contained">
-                      Send Money to Collegue
+                      Send Money to Colleague
                     </Button>
                   </Box>
                 </form>
@@ -377,7 +382,11 @@ const Shop = (props) => {
                   <CardMedia
                     component="img"
                     src={`data:image/png;base64, ${image}`}
-                    sx={{ width: resolution, objectFit: "contain", height: resolution}}
+                    sx={{
+                      width: resolution,
+                      objectFit: "contain",
+                      height: resolution,
+                    }}
                   />
                   <CardContent>
                     <Typography

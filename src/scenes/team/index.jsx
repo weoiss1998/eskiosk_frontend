@@ -28,76 +28,7 @@ class User {
 var userList = [];
 var users;
 
-async function saveChanges(userList) {
-  var exec = false;
-  if (sessionStorage.getItem("confirmation_prompt") === "true") {
-    if (
-      window.confirm(
-        "Are you sure you want to save the changes? This will finalize your changes."
-      )
-    ) {
-      exec = true;
-    }
-  } else {
-    exec = true;
-  }
-  if (exec === true) {
-    for (let i = 0; i < userList.length; i++) {
-      if (userList[i].modifiedName === true) {
-        var url = new URL(API_URL + "/changeNameUser/");
-        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
-        url.searchParams.append("token", sessionStorage.getItem("token"));
-        url.searchParams.append("change_id", userList[i].id);
-        url.searchParams.append("name", userList[i].name);
-        const response = await fetch(url, { method: "PATCH" });
-        await response.json();
-        userList[i].modifiedName = false;
-      }
-      if (userList[i].modifiedEmail === true) {
-        var url = new URL(API_URL + "/changeEmail/");
-        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
-        url.searchParams.append("token", sessionStorage.getItem("token"));
-        url.searchParams.append("change_id", userList[i].id);
-        url.searchParams.append("email", userList[i].email);
-        const response = await fetch(url, { method: "PATCH" });
-        await response.json();
-        userList[i].modifiedEmail = false;
-      }
-      if (userList[i].modifiedStatus === true) {
-        var url = new URL(API_URL + "/changeUserStatus/");
-        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
-        url.searchParams.append("token", sessionStorage.getItem("token"));
-        url.searchParams.append("change_id", userList[i].id);
-        url.searchParams.append("is_active", userList[i].isActive);
-        const response = await fetch(url, { method: "PATCH" });
-        await response.json();
-        userList[i].modifiedStatus = false;
-      }
-      if (userList[i].modifiedAccessLevel === true) {
-        var url = new URL(API_URL + "/changeUserAdmin/");
-        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
-        url.searchParams.append("token", sessionStorage.getItem("token"));
-        url.searchParams.append("change_id", userList[i].id);
-        url.searchParams.append("is_admin", userList[i].access);
-        const response = await fetch(url, { method: "PATCH" });
-        await response.json();
-        userList[i].modifiedAccessLevel = false;
-      }
-      if (userList[i].modifiedPaid === true) {
-        var url = new URL(API_URL + "/changePaid/");
-        url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
-        url.searchParams.append("token", sessionStorage.getItem("token"));
-        url.searchParams.append("change_id", userList[i].id);
-        url.searchParams.append("paid", userList[i].paid);
-        const response = await fetch(url, { method: "PATCH" });
-        await response.json();
-        userList[i].modifiedPaid = false;
-      }
-    }
-    window.location.reload();
-  }
-}
-const Team = () => {
+const Team = (props) => {
   const navigate = useNavigate();
   const handleClick = (event, cellValues) => {
     console.log(cellValues.row);
@@ -171,6 +102,83 @@ const Team = () => {
       return enterAmount();
     } else if (varValue != null) {
       return varValue;
+    }
+  }
+
+  async function saveChanges(userList) {
+    var exec = false;
+    if (sessionStorage.getItem("confirmation_prompt") === "true") {
+      if (
+        window.confirm(
+          "Are you sure you want to save the changes? This will finalize your changes."
+        )
+      ) {
+        exec = true;
+      }
+    } else {
+      exec = true;
+    }
+    if (exec === true) {
+      for (let i = 0; i < userList.length; i++) {
+        if (userList[i].modifiedName === true) {
+          var url = new URL(API_URL + "/changeNameUser/");
+          url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+          url.searchParams.append("token", sessionStorage.getItem("token"));
+          url.searchParams.append("change_id", userList[i].id);
+          url.searchParams.append("name", userList[i].name);
+          const response = await fetch(url, { method: "PATCH" });
+          await response.json();
+          userList[i].modifiedName = false;
+        }
+        if (userList[i].modifiedEmail === true) {
+          var url = new URL(API_URL + "/changeEmail/");
+          url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+          url.searchParams.append("token", sessionStorage.getItem("token"));
+          url.searchParams.append("change_id", userList[i].id);
+          url.searchParams.append("email", userList[i].email);
+          const response = await fetch(url, { method: "PATCH" });
+          await response.json();
+          userList[i].modifiedEmail = false;
+        }
+        if (userList[i].modifiedStatus === true) {
+          var url = new URL(API_URL + "/changeUserStatus/");
+          url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+          url.searchParams.append("token", sessionStorage.getItem("token"));
+          url.searchParams.append("change_id", userList[i].id);
+          url.searchParams.append("is_active", userList[i].isActive);
+          const response = await fetch(url, { method: "PATCH" });
+          await response.json();
+          userList[i].modifiedStatus = false;
+        }
+        if (userList[i].modifiedAccessLevel === true) {
+          var url = new URL(API_URL + "/changeUserAdmin/");
+          url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+          url.searchParams.append("token", sessionStorage.getItem("token"));
+          url.searchParams.append("change_id", userList[i].id);
+          url.searchParams.append("is_admin", userList[i].access);
+          const response = await fetch(url, { method: "PATCH" });
+          await response.json();
+          userList[i].modifiedAccessLevel = false;
+        }
+        if (userList[i].modifiedPaid === true) {
+          var url = new URL(API_URL + "/changePaid/");
+          url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+          url.searchParams.append("token", sessionStorage.getItem("token"));
+          url.searchParams.append("change_id", userList[i].id);
+          url.searchParams.append("paid", userList[i].paid);
+          const response = await fetch(url, { method: "PATCH" });
+          await response.json();
+          if (
+            userList[i].paid === true &&
+            userList[i].id === parseInt(sessionStorage.getItem("user_id"))
+          ) {
+            props.setOpenBalance(0.0);
+          }
+
+          userList[i].modifiedPaid = false;
+        }
+      }
+      window.location.reload();
     }
   }
 
@@ -257,7 +265,7 @@ const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
-    { field: "id", headerName: "ID" },
+    { field: "id", headerName: "ID", flex: 0.25 },
     {
       field: "name",
       headerName: "Name",
@@ -276,18 +284,18 @@ const Team = () => {
       headerName: "Is Active?",
       editable: true,
       type: "boolean",
-      flex: 1,
+      flex: 0.5,
     },
     {
       field: "access",
       headerName: "Is Admin?",
-      flex: 1,
+      flex: 0.5,
       editable: true,
       type: "boolean",
     },
     {
       field: "lastTurnover",
-      headerName: "Turnover last period",
+      headerName: "Open balances",
       flex: 1,
       renderCell: (params) => (
         <Typography>{Number(params.row.lastTurnover).toFixed(2)}€</Typography>
@@ -298,11 +306,11 @@ const Team = () => {
       headerName: "Paid",
       editable: true,
       type: "boolean",
-      flex: 1,
+      flex: 0.5,
     },
     {
       field: "actualTurnover",
-      headerName: "Turnover actual period",
+      headerName: "Turnover current period",
       flex: 1,
       renderCell: (params) => (
         <Typography>{Number(params.row.actualTurnover).toFixed(2)}€</Typography>
@@ -310,6 +318,7 @@ const Team = () => {
     },
     {
       field: "Change Password",
+      flex: 1,
       renderCell: (cellValues) => {
         return (
           <Button
@@ -345,6 +354,7 @@ const Team = () => {
     },
     {
       field: "Add Money",
+      flex: 1,
       renderCell: (cellValues) => {
         return (
           <Button
@@ -366,6 +376,12 @@ const Team = () => {
                 url.searchParams.append("change_id", cellValues.row.id);
                 url.searchParams.append("amount", amountAddition);
                 const response = fetch(url, { method: "POST" });
+                if (
+                  cellValues.row.id ===
+                  parseInt(sessionStorage.getItem("user_id"))
+                ) {
+                  props.setOpenBalance(props.openBalance + amountAddition);
+                }
                 window.location.reload();
               }
             }}
@@ -377,6 +393,7 @@ const Team = () => {
     },
     {
       field: "Close Period for User",
+      flex: 1,
       renderCell: (cellValues) => {
         return (
           <Button

@@ -25,6 +25,7 @@ function App() {
   const [isSidebar, setIsSidebar] = useState(true);
   const location = useLocation();
   const [cartAmount, setCartAmount] = useState(0);
+  const [openBalance, setOpenBalance] = useState(0.0);
   const excludedRoutes = [
     "/login",
     "/register",
@@ -50,7 +51,11 @@ function App() {
         <CssBaseline />
         <div className="app">
           {!excludedRoutes.includes(location.pathname) && (
-            <Sidebar isSidebar={isSidebar} cartAmount={cartAmount} />
+            <Sidebar
+              isSidebar={isSidebar}
+              cartAmount={cartAmount}
+              openBalance={openBalance}
+            />
           )}
           <main className="content">
             {!excludedRoutes.includes(location.pathname) && (
@@ -58,12 +63,25 @@ function App() {
             )}
             <Routes>
               <Route path="/" element={<Navigate to="/login" />} />
-              <Route path="/team" element={<Team />} />
+              <Route
+                path="/team"
+                element={
+                  <Team
+                    openBalance={openBalance}
+                    setOpenBalance={setOpenBalance}
+                  />
+                }
+              />
               <Route path="/form" element={<Form />} />
               <Route
                 path="/shop"
                 element={
-                  <Shop setCartAmount={setCartAmount} cartAmount={cartAmount} />
+                  <Shop
+                    setCartAmount={setCartAmount}
+                    cartAmount={cartAmount}
+                    openBalance={openBalance}
+                    setOpenBalance={setOpenBalance}
+                  />
                 }
               />
               <Route
@@ -75,7 +93,10 @@ function App() {
               <Route path="/formProduct" element={<FormProduct />} />
               <Route path="/products" element={<Products />} />
               <Route path="/buyHistory" element={<BuyHistory />} />
-              <Route path="/login" element={<SignIn />} />
+              <Route
+                path="/login"
+                element={<SignIn setOpenBalance={setOpenBalance} />}
+              />
               <Route path="adminBuyHistory" element={<AdminBuyHistory />} />
               <Route path="/Register" element={<SignUp />} />
               <Route path="/verifyMail" element={<NewVerifyMail />} />

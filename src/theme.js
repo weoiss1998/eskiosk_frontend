@@ -199,7 +199,14 @@ export const ColorModeContext = createContext({
 });
 
 export const useMode = () => {
-  const [mode, setMode] = useState("dark");
+  var modeSelect = "dark";
+  if (sessionStorage.getItem("theme") === "dark") {
+    modeSelect = "dark";
+  }
+  else {
+    modeSelect = "light";  
+  }
+  const [mode, setMode] = useState(modeSelect);
 
   const colorMode = useMemo(
     () => ({

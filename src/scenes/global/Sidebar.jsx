@@ -7,13 +7,13 @@ import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-import ManageHistoryOutlinedIcon from '@mui/icons-material/ManageHistoryOutlined';
-import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
-import AddBusinessOutlinedIcon from '@mui/icons-material/AddBusinessOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
+import ManageHistoryOutlinedIcon from "@mui/icons-material/ManageHistoryOutlined";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
+import AddBusinessOutlinedIcon from "@mui/icons-material/AddBusinessOutlined";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -39,298 +39,304 @@ const Sidebar = (props) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   var admin_test;
-  if (sessionStorage.getItem("is_admin") === null){
+  if (sessionStorage.getItem("is_admin") === null) {
     admin_test = "false";
+  } else {
+    admin_test = sessionStorage.getItem("is_admin");
   }
-  else{
-    admin_test=sessionStorage.getItem("is_admin");
-  }
-if(admin_test==="true"){
-  return (
-    <Box
-      sx={{
-        "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
-        },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#6870fa !important",
-        },
-      }}
-    >
-      <ProSidebar collapsed={isCollapsed}>
-        <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
-          <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
-          >
+  if (admin_test === "true") {
+    return (
+      <Box
+        sx={{
+          "& .pro-sidebar-inner": {
+            background: `${colors.primary[400]} !important`,
+          },
+          "& .pro-icon-wrapper": {
+            backgroundColor: "transparent !important",
+          },
+          "& .pro-inner-item": {
+            padding: "5px 35px 5px 20px !important",
+          },
+          "& .pro-inner-item:hover": {
+            color: "#868dfb !important",
+          },
+          "& .pro-menu-item.active": {
+            color: "#6870fa !important",
+          },
+        }}
+      >
+        <ProSidebar collapsed={isCollapsed}>
+          <Menu iconShape="square">
+            {/* LOGO AND MENU ICON */}
+            <MenuItem
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+              style={{
+                margin: "10px 0 20px 0",
+                color: colors.grey[100],
+              }}
+            >
+              {!isCollapsed && (
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  ml="15px"
+                >
+                  <Typography variant="h3" color={colors.grey[100]}>
+                    ES Kiosk
+                  </Typography>
+                  <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                    <MenuOutlinedIcon />
+                  </IconButton>
+                </Box>
+              )}
+            </MenuItem>
+
             {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  ES Kiosk
-                </Typography>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
-                </IconButton>
+              <Box mb="25px">
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <img
+                    alt="profile-user"
+                    width="100px"
+                    height="100px"
+                    src={`../../assets/es_logo_gross.jpg`}
+                    style={{ cursor: "pointer", borderRadius: "50%" }}
+                  />
+                </Box>
+                <Box textAlign="center">
+                  <Typography
+                    variant="h2"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    sx={{ m: "10px 0 0 0" }}
+                  >
+                    <div>{sessionStorage.getItem("name")}</div>
+                  </Typography>
+                  <Typography variant="h5" color={colors.greenAccent[500]}>
+                    Balance: {Number(props.openBalance).toFixed(2)}€
+                  </Typography>
+                  <Typography variant="h5" color={colors.greenAccent[500]}>
+                    Admin
+                  </Typography>
+                </Box>
               </Box>
             )}
-          </MenuItem>
 
-          {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`../../assets/es_logo_gross.jpg`}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
-              </Box>
-              <Box textAlign="center">
-                <Typography
-                  variant="h2"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  <div>{sessionStorage.getItem("name")}</div>
-                </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
-                  Balance: {Number( sessionStorage.getItem("open_balance")).toFixed(2)}€
-                </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
-                  Admin
-                </Typography>
-              </Box>
-            </Box>
-          )}
-
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
-              title="Shop"
-              to="/shop"
-              icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              User Data
-            </Typography>
-
-            <Item
-              title="Cart"
-              to="/cart"
-              icon={<Badge badgeContent={props.cartAmount} color="secondary"><ShoppingCartIcon /></Badge>}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Buy History"
-              to="/buyHistory"
-              icon={<HistoryOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Settings"
-              to="/settings"
-              icon={<SettingsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Admin Panel
-            </Typography>
-            <Item
-              title="Products"
-              to="/products"
-              icon={<Inventory2OutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Product Form"
-              to="/formProduct"
-              icon={<AddBusinessOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Profile Form"
-              to="/form"
-              icon={<PersonAddOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            <Box paddingLeft={isCollapsed ? undefined : "10%"}>
               <Item
-              title="Manage User"
-              to="/team"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Overall Buy History"
-              to="/AdminBuyHistory"
-              icon={<ManageHistoryOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+                title="Shop"
+                to="/shop"
+                icon={<HomeOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
 
-          </Box>
-        </Menu>
-      </ProSidebar>
-    </Box>
-  );
-}
-else{
-  return (
-    <Box
-      sx={{
-        "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
-        },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#6870fa !important",
-        },
-      }}
-    >
-      <ProSidebar collapsed={isCollapsed}>
-        <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
-          <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
-          >
-            {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
+              <Typography
+                variant="h6"
+                color={colors.grey[300]}
+                sx={{ m: "15px 0 5px 20px" }}
               >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  ES Kiosk
-                </Typography>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
-                </IconButton>
+                User Data
+              </Typography>
+
+              <Item
+                title="Cart"
+                to="/cart"
+                icon={
+                  <Badge badgeContent={props.cartAmount} color="secondary">
+                    <ShoppingCartIcon />
+                  </Badge>
+                }
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Buy History"
+                to="/buyHistory"
+                icon={<HistoryOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Settings"
+                to="/settings"
+                icon={<SettingsOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+
+              <Typography
+                variant="h6"
+                color={colors.grey[300]}
+                sx={{ m: "15px 0 5px 20px" }}
+              >
+                Admin Panel
+              </Typography>
+              <Item
+                title="Products"
+                to="/products"
+                icon={<Inventory2OutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Product Form"
+                to="/formProduct"
+                icon={<AddBusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Profile Form"
+                to="/form"
+                icon={<PersonAddOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Manage User"
+                to="/team"
+                icon={<PeopleOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Overall Buy History"
+                to="/AdminBuyHistory"
+                icon={<ManageHistoryOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </Box>
+          </Menu>
+        </ProSidebar>
+      </Box>
+    );
+  } else {
+    return (
+      <Box
+        sx={{
+          "& .pro-sidebar-inner": {
+            background: `${colors.primary[400]} !important`,
+          },
+          "& .pro-icon-wrapper": {
+            backgroundColor: "transparent !important",
+          },
+          "& .pro-inner-item": {
+            padding: "5px 35px 5px 20px !important",
+          },
+          "& .pro-inner-item:hover": {
+            color: "#868dfb !important",
+          },
+          "& .pro-menu-item.active": {
+            color: "#6870fa !important",
+          },
+        }}
+      >
+        <ProSidebar collapsed={isCollapsed}>
+          <Menu iconShape="square">
+            {/* LOGO AND MENU ICON */}
+            <MenuItem
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+              style={{
+                margin: "10px 0 20px 0",
+                color: colors.grey[100],
+              }}
+            >
+              {!isCollapsed && (
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  ml="15px"
+                >
+                  <Typography variant="h3" color={colors.grey[100]}>
+                    ES Kiosk
+                  </Typography>
+                  <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                    <MenuOutlinedIcon />
+                  </IconButton>
+                </Box>
+              )}
+            </MenuItem>
+
+            {!isCollapsed && (
+              <Box mb="25px">
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <img
+                    alt="profile-user"
+                    width="100px"
+                    height="100px"
+                    src={`../../assets/es_logo_gross.jpg`}
+                    style={{ cursor: "pointer", borderRadius: "50%" }}
+                  />
+                </Box>
+                <Box textAlign="center">
+                  <Typography
+                    variant="h2"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    sx={{ m: "10px 0 0 0" }}
+                  >
+                    {sessionStorage.getItem("name")}
+                  </Typography>
+                  <Typography variant="h5" color={colors.greenAccent[500]}>
+                    Balance: {Number(props.openBalance).toFixed(2)}€
+                  </Typography>
+                </Box>
               </Box>
             )}
-          </MenuItem>
 
-          {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`../../assets/es_logo_gross.jpg`}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
-              </Box>
-              <Box textAlign="center">
-                <Typography
-                  variant="h2"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  {sessionStorage.getItem("name")}
-                </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
-                  Balance: {Number(sessionStorage.getItem("open_balance")).toFixed(2)}€
-                </Typography>
-              </Box>
+            <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+              <Item
+                title="Shop"
+                to="/shop"
+                icon={<HomeOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+
+              <Typography
+                variant="h6"
+                color={colors.grey[300]}
+                sx={{ m: "15px 0 5px 20px" }}
+              >
+                User Data
+              </Typography>
+
+              <Item
+                title="Cart"
+                to="/cart"
+                icon={
+                  <Badge badgeContent={props.cartAmount} color="secondary">
+                    <ShoppingCartIcon />
+                  </Badge>
+                }
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Settings"
+                to="/settings"
+                icon={<SettingsOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Buy History"
+                to="/buyHistory"
+                icon={<HistoryOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
             </Box>
-          )}
-
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
-              title="Shop"
-              to="/shop"
-              icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              User Data
-            </Typography>
-
-            <Item
-              title="Cart"
-              to="/cart"
-              icon={<Badge badgeContent={props.cartAmount} color="secondary"><ShoppingCartIcon /></Badge>}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Settings"
-              to="/settings"
-              icon={<SettingsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Buy History"
-              to="/buyHistory"
-              icon={<HistoryOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          </Box>
-        </Menu>
-      </ProSidebar>
-    </Box>
-  );}
-          }
+          </Menu>
+        </ProSidebar>
+      </Box>
+    );
+  }
+};
 
 export default Sidebar;
