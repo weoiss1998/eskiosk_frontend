@@ -1,4 +1,4 @@
-import { Box, useTheme, Stack } from "@mui/material";
+import { Box, useTheme, Stack, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -289,6 +289,9 @@ const Team = () => {
       field: "lastTurnover",
       headerName: "Turnover last period",
       flex: 1,
+      renderCell: (params) => (
+        <Typography>{Number(params.row.lastTurnover).toFixed(2)}€</Typography>
+      ),
     },
     {
       field: "paid",
@@ -301,6 +304,9 @@ const Team = () => {
       field: "actualTurnover",
       headerName: "Turnover actual period",
       flex: 1,
+      renderCell: (params) => (
+        <Typography>{Number(params.row.actualTurnover).toFixed(2)}€</Typography>
+      ),
     },
     {
       field: "Change Password",

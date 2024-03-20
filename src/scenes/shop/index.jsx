@@ -377,7 +377,7 @@ const Shop = (props) => {
                   <CardMedia
                     component="img"
                     src={`data:image/png;base64, ${image}`}
-                    sx={{ width: resolution, objectFit: "contain" }}
+                    sx={{ width: resolution, objectFit: "contain", height: resolution}}
                   />
                   <CardContent>
                     <Typography
