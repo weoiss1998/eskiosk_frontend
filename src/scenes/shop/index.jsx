@@ -180,7 +180,7 @@ const Shop = (props) => {
     const obj = await response.json();
     if (response.status === 200) {
       if (window.confirm("Money sent successfully")) {
-        props.setOpenBalance(props.openBalance - parseFloat(values.amount));
+        props.setOpenBalance(props.openBalance + parseFloat(values.amount));
       }
     } else {
       if (window.confirm("Error sending money")) {

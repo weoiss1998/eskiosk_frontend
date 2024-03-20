@@ -30,11 +30,15 @@ var users;
 
 const Team = (props) => {
   const navigate = useNavigate();
+
+  const [data, setData] = useState([]);
+  const [status, setStatus] = useState(0);
+
   const handleClick = (event, cellValues) => {
     console.log(cellValues.row);
   };
 
-  const closePeriod = () => {
+  async function closePeriod() {
     var exec = false;
     if (sessionStorage.getItem("confirmation_prompt") === "true") {
       if (
@@ -51,9 +55,10 @@ const Team = (props) => {
       var url = new URL(API_URL + "/closePeriod/");
       url.searchParams.append("admin_id", sessionStorage.getItem("user_id"));
       url.searchParams.append("token", sessionStorage.getItem("token"));
-      const response = fetch(url, { method: "POST" });
+      const response = await fetch(url, { method: "POST" });
     }
-  };
+    setStatus(0);
+  }
 
   function enterAmount(varValue) {
     var enteredAmount = prompt("Please enter Euro amount you want to add");
@@ -178,7 +183,7 @@ const Team = (props) => {
           userList[i].modifiedPaid = false;
         }
       }
-      window.location.reload();
+      setStatus(0);
     }
   }
 
@@ -205,10 +210,8 @@ const Team = (props) => {
     } else {
       alert("Error closing period for user");
     }
+    setStatus(0);
   }
-
-  const [data, setData] = useState([]);
-  const [status, setStatus] = useState(0);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -223,9 +226,7 @@ const Team = (props) => {
         url.searchParams.append("token", sessionStorage.getItem("token"));
         const response = await fetch(url, { method: "GET" });
         const result = await response.json();
-        if (isSubscribed) {
-          users = result;
-        }
+        users = result;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -237,6 +238,9 @@ const Team = (props) => {
         temp.email = users[i].email;
         temp.isActive = users[i].is_active;
         temp.access = users[i].is_admin;
+        if (parseInt(sessionStorage.getItem("user_id")) === users[i].id) {
+          props.setOpenBalance(users[i].last_turnover);
+        }
         temp.lastTurnover = users[i].last_turnover;
         temp.paid = users[i].paid;
         temp.actualTurnover = users[i].actual_turnover;
@@ -260,7 +264,7 @@ const Team = (props) => {
     }
 
     return () => (isSubscribed = false);
-  }, [users]);
+  }, [users, status]);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -382,7 +386,8 @@ const Team = (props) => {
                 ) {
                   props.setOpenBalance(props.openBalance + amountAddition);
                 }
-                window.location.reload();
+                //window.location.reload();
+                setStatus(0);
               }
             }}
           >
@@ -481,28 +486,28 @@ const Team = (props) => {
         <DataGrid
           rows={userList}
           columns={columns}
-          onCellEditCommit={(props, event) => {
+          onCellEditCommit={(prop, event) => {
             for (let i = 0; i < userList.length; i++) {
-              if (userList[i].id === props.id) {
-                if (props.field === "name") {
+              if (userList[i].id === prop.id) {
+                if (prop.field === "name") {
                   userList[i].modifiedName = true;
-                  userList[i].name = props.value;
+                  userList[i].name = prop.value;
                 }
-                if (props.field === "paid") {
+                if (prop.field === "paid") {
                   userList[i].modifiedPaid = true;
-                  userList[i].paid = props.value;
+                  userList[i].paid = prop.value;
                 }
-                if (props.field === "email") {
+                if (prop.field === "email") {
                   userList[i].modifiedEmail = true;
-                  userList[i].email = props.value;
+                  userList[i].email = prop.value;
                 }
-                if (props.field === "isActive") {
+                if (prop.field === "isActive") {
                   userList[i].modifiedStatus = true;
-                  userList[i].isActive = props.value;
+                  userList[i].isActive = prop.value;
                 }
-                if (props.field === "access") {
+                if (prop.field === "access") {
                   userList[i].modifiedAccessLevel = true;
-                  userList[i].access = props.value;
+                  userList[i].access = prop.value;
                 }
               }
             }
