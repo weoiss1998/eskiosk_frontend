@@ -1,4 +1,4 @@
-import { Box, useTheme, Button, Avatar } from "@mui/material";
+import { Box, useTheme, Button, Avatar, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -260,29 +260,14 @@ const Products = () => {
       headerAlign: "left",
       align: "left",
     },
-    /*{
-      field: "phone",
-      headerName: "Phone Number",
-      flex: 1,
-      renderCell: (cellValues) => {
-        return (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={(event) => {
-              handleClick(event, cellValues);
-            }}
-          >
-            {cellValues.value}
-          </Button>
-        );
-          },
-    },*/
     {
       field: "price",
       editable: true,
       headerName: "Price in EUR",
       flex: 1,
+      renderCell: (params) => (
+        <Typography>{Number(params.row.price).toFixed(2)}</Typography>
+      ),
     },
     {
       field: "updateImage",
@@ -364,11 +349,11 @@ const Products = () => {
                 }
                 if (props.field === "quantity") {
                   productList[i].modifiedQuantity = true;
-                  productList[i].quantity = props.value;
+                  productList[i].quantity = Math.round(props.value);
                 }
                 if (props.field === "price") {
                   productList[i].modifiedPrice = true;
-                  productList[i].price = props.value;
+                  productList[i].price = Number(props.value).toFixed(2);
                 }
                 if (props.field === "is_active") {
                   productList[i].modifiedIsActive = true;
