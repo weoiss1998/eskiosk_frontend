@@ -27,49 +27,6 @@ class Product {
   cost = 10.99;
 }
 
-async function checkout(listCart) {
-  var exec = false;
-  if (sessionStorage.getItem("confirmation_prompt") === "true") {
-    if (
-      window.confirm(
-        "Are you sure you want to checkout? This will finalize your order."
-      )
-    ) {
-      exec = true;
-    }
-  } else {
-    exec = true;
-  }
-  if (exec === true) {
-    var url = new URL(API_URL + "/cart/products/");
-    url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
-    url.searchParams.append("token", sessionStorage.getItem("token"));
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(listCart),
-    });
-    const obj = await response.json();
-    /*if (obj.is_active===true){
-            console.log("yes")
-            logIn() 
-        }
-        else {
-            if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
-                navigate("/register")
-            }  
-            else {
-                navigate("/")
-            }
-        }*/
-    sessionStorage.removeItem("cart");
-    cart = [];
-    window.location.reload();
-  }
-}
-
 var cart = [];
 var products;
 var items;
@@ -79,6 +36,39 @@ const Cart = (prop) => {
   const theme = useTheme();
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(0);
+
+  async function checkout(listCart) {
+    var exec = false;
+    if (sessionStorage.getItem("confirmation_prompt") === "true") {
+      if (
+        window.confirm(
+          "Are you sure you want to checkout? This will finalize your order."
+        )
+      ) {
+        exec = true;
+      }
+    } else {
+      exec = true;
+    }
+    if (exec === true) {
+      var url = new URL(API_URL + "/cart/products/");
+      url.searchParams.append("user_id", sessionStorage.getItem("user_id"));
+      url.searchParams.append("token", sessionStorage.getItem("token"));
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(listCart),
+      });
+      const obj = await response.json();
+      sessionStorage.removeItem("cart");
+      cart = [];
+      prop.setCartAmount(0);
+      setStatus(0);
+      //window.location.reload();
+    }
+  }
 
   const handleClick = (event, cellValues) => {
     var exec = false;
@@ -103,7 +93,6 @@ const Cart = (prop) => {
       prop.setCartAmount(temp);
       sessionStorage.setItem("cart", JSON.stringify([...items]));
       setStatus(0);
-      window.location.reload();
     }
   };
 
@@ -118,10 +107,8 @@ const Cart = (prop) => {
         //const response = await fetch("./db.json");
         const response = await fetch(API_URL + "/products/");
         const result = await response.json();
-        if (isSubscribed) {
-          //setData(result);
-          products = result;
-        }
+        //setData(result);
+        products = result;
         //console.table(data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -166,7 +153,7 @@ const Cart = (prop) => {
     }
 
     return () => (isSubscribed = false);
-  }, [cart, products]);
+  }, [products, status]);
 
   const colors = tokens(theme.palette.mode);
 
@@ -304,20 +291,34 @@ const Cart = (prop) => {
             for (let i = 0; i < cart.length; i++) {
               if (cart[i].id === props.id) {
                 if (props.field === "quantity") {
-                  if (props.value > products[i].quantity) {
-                    props.value = products[i].quantity;
+                  for (let j = 0; j < products.length; j++) {
+                    if (products[j].id === props.id) {
+                      if (props.value > products[j].quantity) {
+                        props.value = products[j].quantity;
+                      }
+                      break;
+                    }
                   }
+                  var items_list = new Map(
+                    JSON.parse(sessionStorage.getItem("cart"))
+                  );
+                  var quantity = Math.round(props.value);
+                  items_list.set(cart[i].id, quantity);
+                  sessionStorage.removeItem("cart");
+                  sessionStorage.setItem(
+                    "cart",
+                    JSON.stringify([...items_list])
+                  );
                   cart[i].quantity = props.value;
                   cart[i].cost = cart[i].quantity * cart[i].price;
-                  items.set(cart[i].id, cart[i].quantity);
                   var temp = 0;
-                  items.forEach(function (value, key) {
+                  items_list.forEach(function (value, key) {
                     temp += parseInt(value);
                   });
+                  console.log(temp);
                   prop.setCartAmount(temp);
-                  sessionStorage.setItem("cart", JSON.stringify([...items]));
-                  window.location.reload();
                   setStatus(0);
+                  //window.location.reload();
                 }
               }
             }
